@@ -27,26 +27,26 @@ public class Principal {
                 padrao.equals("OPERADORES")) {
                 // Se o padrao do token for uma PALAVRA_CHAVE ou DELIM
                 // System.out.println("<\'" + t.getText() + "\',\'" + t.getText() + "\'>");
-                buffer += "<\'" + t.getText() + "\',\'" + t.getText() + "\'>\r\n";
+                buffer += "<\'" + t.getText() + "\',\'" + t.getText() + "\'>";
             }
             else if (padrao.equals("IDENT") || padrao.equals("CADEIA") ||
                      padrao.equals("NUM_INT") ) {
                 // Se o padrao do token for um IDENT ou CADEIA ou NUM_INT
                 // System.out.println("<\'" + t.getText() + "\'," +  padrao + ">");
-                buffer += "<\'" + t.getText() + "\'," +  padrao + ">\r\n";
+                buffer += "<\'" + t.getText() + "\'," +  padrao + ">";
             }
             else if (padrao.equals("ERRO") || padrao.equals("COMENTARIO_ERRO")) {
                 if (padrao.equals("COMENTARIO_ERRO")) {
                     buffer += "Linha " + t.getLine() + ": " +
-                              "comentario nao fechado\r\n";
+                              "comentario nao fechado";
                 }
                 else if (padrao.equals("CADEIA_ERRO")) {
                     buffer += "Linha " + t.getLine() + ": " +
-                              "cadeia literal nao fechada\r\n";
+                              "cadeia literal nao fechada";
                 }
                 else {
                     buffer += "Linha " + t.getLine() + ": " + t.getText() + 
-                              " - simbolo nao identificado\r\n";
+                              " - simbolo nao identificado";
                 }
                 erro = true;
             }
@@ -54,7 +54,7 @@ public class Principal {
                 System.out.println("ESTRANHO" + padrao + "   " + t.getText());
             }
             
-            writer.print(buffer);
+            writer.print(buffer + "\n");
             buffer = "";
         }
         writer.close();
