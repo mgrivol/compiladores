@@ -2,20 +2,25 @@ lexer grammar LALexer;
 
 PALAVRA_CHAVE 
 : 
-    ( 'algoritmo' | 'declare'   | 'fim_algoritmo' |
-      'literal'   | 'inteiro'   | 'leia'          |
-      'escreva'   | 'constante' | 'logico'        |
-      'falso'     | 'entao'     | 'enquanto'      |
-      'nao'       | 'e'         | 'verdadeiro'    |
-      'se'        | 'faca'      | 'fim_enquanto'  |
-      'fim_se'    | 'tipo'      | 'real'          |
-      'var'       | 'fim_registro' | 'fim_procedimento'
+    ( 'algoritmo' | 'declare'    | 'fim_algoritmo' |
+      'literal'   | 'inteiro'    | 'leia'          |
+      'escreva'   | 'constante'  | 'logico'        |
+      'falso'     | 'entao'      | 'enquanto'      |
+      'nao'       | 'e'          | 'verdadeiro'    |
+      'se'        | 'faca'       | 'fim_enquanto'  |
+      'fim_se'    | 'tipo'       | 'real'          |
+      'var'       | 'fim_para'   | 'fim_registro'  | 
+      'ou'        | 'senao'      | 'caso'          |
+      'seja'      | 'para'       | 'ate'           |
+      'fim_caso'  | 'registro'   | 'retorne'       |
+      'funcao'    | 'fim_funcao' | 'procedimento'  |
+      'fim_procedimento'
     )   
 ;
 
 IDENT 
 : 
-    ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9')*
+    ( 'a'..'z' | 'A'..'Z' ) ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
 ;
 
 NUM_INT 
@@ -23,22 +28,28 @@ NUM_INT
     ( '0'..'9' )+
 ;
 
-CADEIA 
+NUM_REAL
 :
-    '"' (CADEIA | .)*? '"'
+    ( '0'..'9' )+ '.' ('0'..'9')+
 ;
 
 CADEIA_ERRO
 :
-    '"' (CADEIA | .)*?
+    '"' ~('"')* '\n'
+;
+
+CADEIA 
+:
+    '"' ~('"' | '\n')* '"'
 ;
 
 OPERADORES 
 :
     ( '='  | '+'  | '-'  |
       '<=' | '>=' | '<-' |
-      '<'  | '>'  | '/'  |
-      '*'
+      '<>' | '<'  | '>'  | 
+      '/'  | '*'  | '..' |
+      '%'  | '^'  | '&'
     )
 ;
 
@@ -55,17 +66,17 @@ WS
     ( ' ' | '\t' | '\r' | '\n' ) -> skip
 ;
 
-COMENTARIO_ERRO
-:
-    '{' ~('}')* '\n'
-;
-
 COMENTARIO 
 :
     '{' ~('}' | '\n')* '}' -> skip
 ;
 
-ERRO
+COMENTARIO_ERRO
+:
+    '{' ~('}')* '\n'
+;
+
+ERRO_SIMBOLO
 :
     .
 ;
