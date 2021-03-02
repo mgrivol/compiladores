@@ -20,12 +20,12 @@ mvn --version
 ### Repositório
 Clone este repósitorio em um local de fácil acesso para facilitar a execução: ``git clone https://github.com/marcogrivol/compiladores``
 
-### Build
+### Compilar
 Abra o NetBeans, selecione **File → Open Project**, acesse o diretório com o clone do repositório, selecione o diretório **Trabalho1** e abra o projeto.
 Na barra de ferramentas da IDE, selecione **Clean and Build Project**.
 
 ## Execução
-Após realizada a construção (build) do projeto, acesse o terminal e digite: \
+Após realizada a compilação do projeto, acesse o terminal e digite: \
 ``java -jar LOCAL_CLONE/compiladores/Trabalho1/target/Trabalho1-1.0-SNAPSHOT-jar-with-dependencies.jar ARQUIVO_ENTRADA ARQUIVO_SAIDA``
 * LOCAL_CLONE: é o caminho até o diretório contendo o repositório da etapa anterior.
 * ARQUIVO_ENTRADA: é o caminho até o arquivo .txt contendo a linguagem LA que será realizada a análise léxica.
