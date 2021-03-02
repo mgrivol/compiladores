@@ -1,0 +1,7 @@
+Comando para o programa trabalho1:
+
+java -jar /home/marco/cs/compiladores/compiladores/Trabalho1/target/Trabalho1-1.0-SNAPSHOT-jar-with-dependencies.jar /home/marco/cs/compiladores/compiladores/Trabalho1/programa.txt /home/marco/cs/compiladores/corretor/temp/saida.txt
+
+Comando para o corretor:
+
+java -jar /home/marco/cs/compiladores/corretor/corretor.jar "java -jar /home/marco/cs/compiladores/compiladores/Trabalho1/target/Trabalho1-1.0-SNAPSHOT-jar-with-dependencies.jar" gcc /home/marco/cs/compiladores/corretor/temp/ /home/marco/cs/compiladores/corretor/casos-de-teste/ "758619" lexico
