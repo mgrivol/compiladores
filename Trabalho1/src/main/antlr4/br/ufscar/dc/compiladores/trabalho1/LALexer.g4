@@ -18,6 +18,26 @@ PALAVRA_CHAVE
     )   
 ;
 
+COMENTARIO 
+:
+    '{' ~('}' | '\n')* '}' -> skip
+;
+
+COMENTARIO_ERRO
+:
+    '{' ~('}')* '\n'
+;
+
+CADEIA_ERRO
+:
+    '"' ~('"')* '\n'
+;
+
+CADEIA 
+:
+    '"' ~('"' | '\n')* '"'
+;
+
 IDENT 
 : 
     ( 'a'..'z' | 'A'..'Z' ) ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
@@ -33,14 +53,12 @@ NUM_REAL
     ( '0'..'9' )+ '.' ('0'..'9')+
 ;
 
-CADEIA_ERRO
+DELIM 
 :
-    '"' ~('"')* '\n'
-;
-
-CADEIA 
-:
-    '"' ~('"' | '\n')* '"'
+    ( ':' | ',' | '(' | 
+      ')' | '[' | ']' | 
+      '_' | '.' 
+    )
 ;
 
 OPERADORES 
@@ -53,27 +71,9 @@ OPERADORES
     )
 ;
 
-DELIM 
-:
-    ( ':' | ',' | '(' | 
-      ')' | '[' | ']' | 
-      '_' | '.' 
-    )
-;
-
 WS 
 : 
     ( ' ' | '\t' | '\r' | '\n' ) -> skip
-;
-
-COMENTARIO 
-:
-    '{' ~('}' | '\n')* '}' -> skip
-;
-
-COMENTARIO_ERRO
-:
-    '{' ~('}')* '\n'
 ;
 
 ERRO_SIMBOLO
