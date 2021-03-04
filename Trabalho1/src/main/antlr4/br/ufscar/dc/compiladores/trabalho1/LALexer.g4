@@ -18,26 +18,6 @@ PALAVRA_CHAVE
     )   
 ;
 
-COMENTARIO 
-:
-    '{' ~('}' | '\n')* '}' -> skip
-;
-
-COMENTARIO_ERRO
-:
-    '{' ~('}')* '\n'
-;
-
-CADEIA_ERRO
-:
-    '"' ~('"')* '\n'
-;
-
-CADEIA 
-:
-    '"' ~('"' | '\n')* '"'
-;
-
 IDENT 
 : 
     ( 'a'..'z' | 'A'..'Z' ) ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
@@ -74,6 +54,26 @@ OPERADORES
 WS 
 : 
     ( ' ' | '\t' | '\r' | '\n' ) -> skip
+;
+
+COMENTARIO 
+:
+    '{' ~('}' | '\n')* '}' -> skip
+;
+
+COMENTARIO_ERRO
+:
+    '{' ~('}')* '\n'
+;
+
+CADEIA 
+:
+    '"' ~('"' | '\n')* '"'
+;
+
+CADEIA_ERRO
+:
+    '"' ~('"')* '\n'
 ;
 
 ERRO_SIMBOLO
