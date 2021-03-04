@@ -25,7 +25,7 @@ Abra o NetBeans, selecione **File → Open Project**, acesse o diretório com o 
 Na barra de ferramentas da IDE, selecione **Clean and Build Project**.
 
 ## Execução
-Após realizada a compilação do projeto, acesse o terminal e digite: \
+Ulize o arquivo "Trabalho1-1.0-SNAPSHOT-jar-with-dependencies.jar" ou realize a compilação do projeto, acesse o terminal e digite: \
 ``java -jar LOCAL_CLONE/compiladores/Trabalho1/target/Trabalho1-1.0-SNAPSHOT-jar-with-dependencies.jar ARQUIVO_ENTRADA ARQUIVO_SAIDA``
 * LOCAL_CLONE: é o caminho até o diretório contendo o repositório da etapa anterior.
 * ARQUIVO_ENTRADA: é o caminho até o arquivo .txt contendo a linguagem LA que será realizada a análise léxica.
