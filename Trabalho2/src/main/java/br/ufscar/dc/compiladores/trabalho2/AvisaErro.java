@@ -18,8 +18,6 @@ public class AvisaErro extends BaseErrorListener {
         Token t = (Token) offendingSymbol;
         String padrao = LALexer.VOCABULARY.getSymbolicName(t.getType());
         
-//        System.out.println(t.getType() + " ->" + t.getText());
-        
         String buffer = "vazio";
         if (padrao != null && padrao.equals("COMENTARIO_ERRO")) {
             buffer = "Linha " + t.getLine() + ": comentario nao fechado";
