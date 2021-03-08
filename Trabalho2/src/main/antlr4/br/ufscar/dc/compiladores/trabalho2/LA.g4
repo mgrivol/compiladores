@@ -1,10 +1,5 @@
 grammar LA;
 
-WS 
-: 
-    ( ' ' | '\t' | '\r' | '\n' ) -> skip
-;
-
 IDENT 
 : 
     ( 'a'..'z' | 'A'..'Z' | '_' ) ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
@@ -20,6 +15,11 @@ NUM_REAL
     ( '0'..'9' )+ '.' ('0'..'9')+
 ;
 
+WS 
+: 
+    ( ' ' | '\t' | '\r' | '\n' ) -> skip
+;
+
 COMENTARIO 
 :
     '{' ~('}' | '\n')* '}' -> skip
@@ -32,13 +32,12 @@ COMENTARIO_ERRO
 
 CADEIA 
 :
-    '"' ~('"' | '\n')* '"' -> skip
+    '"' ~('"' | '\n')* '"'
 ;
 
 CADEIA_ERRO
 :
     '"' ~('"')* '\n'
-    { System.out.println("cadeia erro"); }
 ;
 
 programa
@@ -303,7 +302,7 @@ op_logico_2
     'e'
 ;
 
-ERRO_SIMBOLO
+SIMBOLO_ERRO
 :
     .
 ;

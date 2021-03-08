@@ -18,7 +18,7 @@ public class AvisaErro extends BaseErrorListener {
         Token t = (Token) offendingSymbol;
         String padrao = LALexer.VOCABULARY.getSymbolicName(t.getType());
         
-        System.out.println(t.getType() + " ->" + t.getText());
+//        System.out.println(t.getType() + " ->" + t.getText());
         
         String buffer = "vazio";
         if (padrao != null && padrao.equals("COMENTARIO_ERRO")) {
@@ -27,8 +27,11 @@ public class AvisaErro extends BaseErrorListener {
         else if (padrao != null && padrao.equals("CADEIA_ERRO")) {
             buffer = "Linha " + t.getLine() + ": cadeia literal nao fechada";
         }
-        else if (t.getText().equals("<EOF>")) {
-            buffer = "Linha " + t.getLine() + ": erro sintatico proximo a <EOF>";
+        else if (padrao != null && padrao.equals("SIMBOLO_ERRO")) {
+            buffer = "Linha " + t.getLine() + ": " + t.getText() + " - simbolo nao identificado";
+        }
+        else if (t.getType() == Token.EOF) {
+            buffer = "Linha " + t.getLine() + ": erro sintatico proximo a EOF";
         }
         else {
             buffer = "Linha " + t.getLine() + ": erro sintatico proximo a " + t.getText();
