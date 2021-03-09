@@ -1,10 +1,10 @@
+// Aluno: Marco Antônio Bernardi Grivol
+// RA:    758619
+
+// lexemas da linguagem LA
 grammar LA;
 
-IDENT 
-: 
-    ( 'a'..'z' | 'A'..'Z' | '_' ) ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
-;
-
+// variáveis
 NUM_INT 
 :
     ( '0'..'9' )+
@@ -15,6 +15,12 @@ NUM_REAL
     ( '0'..'9' )+ '.' ('0'..'9')+
 ;
 
+IDENT 
+: 
+    ( 'a'..'z' | 'A'..'Z' | '_' ) ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
+;
+
+// espaços em branco
 WS 
 : 
     ( ' ' | '\t' | '\r' | '\n' ) -> skip
@@ -40,6 +46,7 @@ CADEIA_ERRO
     '"' ~('"')* '\n'
 ;
 
+// regras de produção de um algoritmo da linguagem LA
 programa
 :
     declaracoes 'algoritmo' corpo 'fim_algoritmo'
