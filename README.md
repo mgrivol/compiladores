@@ -10,5 +10,5 @@ O primeiro trabalho apresenta um analisador léxico para a linguagem LA.\
 [**Trabalho1**](https://github.com/MarcoGrivol/compiladores/tree/master/Trabalho1)
 
 ## Trabalho 2: Analisador Sintático
-**IGNORAR Trabalho2**
-Trabalho em desenvolvimento. 
+O segundo trabalho apresenta um analisador sintático para a linguagem LA.\
+[**Trabalho2**](https://github.com/MarcoGrivol/compiladores/tree/master/Trabalho2)
