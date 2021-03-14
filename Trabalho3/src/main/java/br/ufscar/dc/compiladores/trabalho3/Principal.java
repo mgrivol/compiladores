@@ -1,8 +1,8 @@
 // Aluno: Marco Antônio Bernardi Grivol
 // RA:    758619
-
 package br.ufscar.dc.compiladores.trabalho3;
 
+import br.ufscar.dc.compiladores.trabalho3.LAParser.ProgramaContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import org.antlr.v4.runtime.CharStream;
@@ -11,13 +11,9 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public class Principal {
+
     // classe Principal é responsável por realizar a análise sintática da linguagem LA
     public static void main(String[] args) throws IOException {
-        /* para executar é necessário passar dois argumentos:
-            (arquivo_entrada, arquivo_saida) com os respectivos caminhos.
-                arquivo_entrada := arquivo que será realizada a análise léxica
-                arquivo_saida := arquivo que a saída com os tokes será escrita
-        */
         try (PrintWriter writer = new PrintWriter(args[1])) {
             // "cs" é responsável por ler o arquivo_entrada
             CharStream cs = CharStreams.fromFileName(args[0]);
@@ -37,7 +33,12 @@ public class Principal {
             
             try {
                 // caso existam erros, é retornada uma exceção e o programa encerra
-                parser.programa();
+                ProgramaContext arvore = parser.programa();
+                LASemantico las = new LASemantico();
+                las.visitPrograma(arvore);
+                for (String msg : las.getErros()) {
+                    writer.println(msg);
+                }
             }
             catch (ParseCancellationException exception) {
                 // as informações sobre o erro são capturadas para emissão no arquivo_saida
