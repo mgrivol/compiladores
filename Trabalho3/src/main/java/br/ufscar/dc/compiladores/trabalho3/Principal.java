@@ -36,7 +36,7 @@ public class Principal {
                 ProgramaContext arvore = parser.programa();
                 LASemantico las = new LASemantico();
                 las.visitPrograma(arvore);
-                for (String msg : las.getErros()) {
+                for (String msg : LASemanticoUtils.erros) {
                     writer.println(msg);
                 }
             }

@@ -15,7 +15,7 @@ public class Escopos {
         pilhaDeTabelas.push(new TabelaDeSimbolos());
     }
     
-    public TabelaDeSimbolos obeterEscopoAtual() {
+    public TabelaDeSimbolos obterEscopoAtual() {
         return pilhaDeTabelas.peek();
     }
     

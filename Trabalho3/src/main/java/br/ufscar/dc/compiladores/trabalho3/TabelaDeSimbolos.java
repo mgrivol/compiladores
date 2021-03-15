@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TabelaDeSimbolos {
+    /*
     public class TipoLA {
         List<String> tipos;
         
@@ -23,27 +24,34 @@ public class TabelaDeSimbolos {
         public List<String> getTipos() {
             return this.tipos;
         }
+    } */
+    
+    public enum TipoLA {
+        INTEIRO,
+        REAL,
+        LITERAL,
+        INVALIDO
     }
     
     class EntradaTabelaDeSimbolos {
         String nome;
-        String tipo;
+        TipoLA tipo;
         
-        private EntradaTabelaDeSimbolos(String nome, String tipo) {
+        private EntradaTabelaDeSimbolos(String nome, TipoLA tipo) {
             this.nome = nome;
             this.tipo = tipo;
         }
     }
     
     private final Map<String, EntradaTabelaDeSimbolos> tabela;
-    private TipoLA tiposDaTabela;
+//    private TipoLA tiposDaTabela;
     
     public TabelaDeSimbolos() {
         this.tabela = new HashMap();
-        this.tiposDaTabela = new TipoLA();
+//        this.tiposDaTabela = new TipoLA();
     }
     
-    public void adicionar(String nome, String tipo) {
+    public void adicionar(String nome, TipoLA tipo) {
         tabela.put(nome, new EntradaTabelaDeSimbolos(nome, tipo));
     }
     
@@ -51,11 +59,11 @@ public class TabelaDeSimbolos {
         return tabela.containsKey(nome);
     }
     
-    public String verificar(String nome) {
+    public TipoLA verificar(String nome) {
         return tabela.get(nome).tipo;
     }
     
-    public boolean existeTipo(String tipo) {
-        return tiposDaTabela.getTipos().contains(tipo);
-    }
+//    public boolean existeTipo(String tipo) {
+//        return tiposDaTabela.getTipos().contains(tipo);
+//    }
 }
