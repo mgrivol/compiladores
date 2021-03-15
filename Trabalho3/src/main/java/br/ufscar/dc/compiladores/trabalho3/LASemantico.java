@@ -4,6 +4,7 @@ import br.ufscar.dc.compiladores.trabalho3.TabelaDeSimbolos.TipoLA;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Pair;
 
 public class LASemantico extends LABaseVisitor<Void> {
 
@@ -26,7 +27,7 @@ public class LASemantico extends LABaseVisitor<Void> {
         String decl = ctx.getStart().getText();
         switch (decl) {
             case ("declare"):
-                escopo = LASemanticoUtils.verificarDeclare(escopo, ctx.variavel());
+                escopo = LASemanticoUtils.verificaVariavel(escopo, ctx.variavel());
                 break;
         }
         return super.visitDeclaracao_local(ctx);
@@ -55,7 +56,7 @@ public class LASemantico extends LABaseVisitor<Void> {
 
     @Override
     public Void visitTipo(LAParser.TipoContext ctx) {
-        TipoLA tipoVar = LASemanticoUtils.getTipo(ctx);
+        TipoLA tipoVar = LASemanticoUtils.verificaTipo(ctx);
         if (tipoVar == TipoLA.INVALIDO) {
             LASemanticoUtils.adicionaErro("Linha " + ctx.getStart().getLine() + ": tipo " + ctx.getStart().getText() + " nao declarado");
         }
