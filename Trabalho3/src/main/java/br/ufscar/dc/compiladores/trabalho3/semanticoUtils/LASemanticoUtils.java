@@ -6,12 +6,11 @@ import java.util.List;
 import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-// SE Variavel(null, tipo) :=  VALIDO (falso, verdadeiro, cadeia)
-// SE Variavel(nome, null) :=  INVALIDO (identificador nao existe na tabela em questao)
 public class LASemanticoUtils {
 
     // mensagens de erro
     public static List<String> erros = new ArrayList<>();
+    // define quando é possível retornar um valor
     public static boolean podeRetornar = false; 
 
     public static void adicionaErro(String msg) {
@@ -45,7 +44,6 @@ public class LASemanticoUtils {
         escopo.criarNovoEscopo();
         if (ctx.parametros() != null) {
             // existem parâmetros
-            System.out.println("VERIFICA PARAMETROS ");
             List<Variavel> parametros = verificaParametros(escopo, ctx.parametros());
             ret.procedimento.setParametros(parametros);
             for (var p : parametros) {
@@ -115,24 +113,17 @@ public class LASemanticoUtils {
 
     public static List<Variavel> verificaParametros(Escopos escopo, LAParser.ParametrosContext ctx) {
         List<Variavel> ret = new ArrayList<>();
-        System.out.println("parametro" + ctx.getText());
         for (var parametro : ctx.parametro()) {
             // para cada parâmetro
             ret.addAll(verificaParametro(escopo, parametro));
-        }
-        for (var v : ret) {
-            // System.out.println("recebi variavel ->" + v.dados());
         }
         return ret;
     }
 
     public static List<Variavel> verificaParametro(Escopos escopo, LAParser.ParametroContext ctx) {
         TipoLA tipo = verificaTipoEstendido(escopo, ctx.tipo_estendido());
-        
         List<Variavel> ret = new ArrayList<>();
-        
         for (var ident : ctx.identificador()) {
-            System.out.println("ident -> " + ident.getText());
             Variavel novaVar = verificaIdentificador(escopo.obterEscopoAtual(), ident);
             if (novaVar.tipo != null) {
                 // encontrou uma variável com mesmo nome no escopo atual
@@ -151,7 +142,15 @@ public class LASemanticoUtils {
                             if (novaVar.registro == null) {
                                 System.out.println("registro nulo");
                             }
-                            novaVar.setRegistro(aux.getRegistro());
+                            // Por razões além do conhecimento humano, utilizando o corretor automático no windows
+                            // a função abaixo não funciona, travando o corretor sem gerar resultados. 
+                            // Ao comentar a função é possível executar o corretor mas gera erros nos casos 15 e 17
+                            // pois é uma função essencial.
+                            // Foram testados as versões java 15, 11.0.10 e 11.0.2 e nenhuma funcionou no Windows com o corretor.
+                            // Entretanto, a função funciona perfeitamente executando o código manualmente com o comando
+                            // descrito no README.md do Trabalho3.
+                            // Funcionou perfeitamente no ubuntu 20.04, acertando todos os 18 testes com o corretor e manualmente.
+                            novaVar.setRegistro(aux.getRegistro()); // comentar essa função no Windows se for usar o corretor.
                             novaVar.tipo = tipo;
                         } else {
                             System.out.println("aux nulo");
@@ -266,7 +265,6 @@ public class LASemanticoUtils {
     }
 
     public static void verificaCmdAtribuicao(Escopos escopo, LAParser.CmdAtribuicaoContext ctx) {
-        System.out.println("cmd atribuicao->" + ctx.getText());
         // lado esquerdo da expressão
         Variavel esquerdo = verificaIdentificador(escopo.obterEscopoAtual(), ctx.identificador());
         if (esquerdo.tipo == null) {
@@ -276,8 +274,6 @@ public class LASemanticoUtils {
         }
         // lado direito da expressão
         TipoLA direito = verificaExpressao(escopo, ctx.expressao());
-        System.out.println("<" + esquerdo.tipo.tipoBasico + ", " + direito.tipoBasico + ">  --> " + ctx.getText());
-//        System.out.println("<" + esquerdo.tipo.tipoCriado + ", " + direito.tipoBasico + ">  --> " + ctx.getText());
         String pont = "";
         if (ctx.getChild(0).getText().contains("^")) {
             pont += "^";
@@ -526,11 +522,9 @@ public class LASemanticoUtils {
             // existe parcela_unario
             if (ctx.op_unario() != null) {
                 // existe op_unario
-                System.out.println("VERIFICA PARCELA OP UNARIO=>" + ctx.op_unario().getText());
                 if (pUnario.tipoBasico != TipoLA.TipoBasico.INTEIRO && pUnario.tipoBasico != TipoLA.TipoBasico.REAL) {
                     // não é possível atribuir sinal negativo a outro tipo
                     // operador unário não é valido
-                    System.out.println("tipo->" + pUnario.imprime());
                     return new TipoLA(TipoLA.TipoBasico.INVALIDO);
                 }
                 // operador unario é válido
@@ -559,7 +553,6 @@ public class LASemanticoUtils {
             }
             return ident.tipo;
         } else if (ctx.IDENT() != null) {
-            System.out.println("PARCELA UNARIO COM IDENT =>" + ctx.getText());
             return verificaMetodo(escopo, ctx.IDENT(), ctx.expressao());
         } else if (ctx.NUM_INT() != null) {
             return new TipoLA(TipoLA.TipoBasico.INTEIRO);
@@ -569,7 +562,6 @@ public class LASemanticoUtils {
         // se não for nenhum caso anterior
         TipoLA primeiraExp = verificaExpressao(escopo, ctx.expressao(0));
         if (ctx.expressao().size() > 1) {
-            System.out.println("ESTRANHO @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ENCONTREI OUTRA EXPRESSAO");
             for (int i = 1; i < ctx.expressao().size(); i++) {
                 TipoLA segundaExp = verificaExpressao(escopo, ctx.expressao(i));
                 primeiraExp = verificaEquivalenciaTipos(primeiraExp, segundaExp);
@@ -728,6 +720,7 @@ public class LASemanticoUtils {
 
     public static void erroIdentificadorNaoDeclarado(int linha, String nome) {
         LASemanticoUtils.adicionaErro("Linha " + linha + ": identificador " + nome + " nao declarado");
+        System.out.println("Linha " + linha + ": identificador " + nome + " nao declarado");
     }
 
     public static void erroIdentificadorJaDeclarado(int linha, String nome) {
@@ -737,13 +730,16 @@ public class LASemanticoUtils {
 
     public static void erroAtribuicaoIncompativel(int linha, String nome) {
         LASemanticoUtils.adicionaErro("Linha " + linha + ": atribuicao nao compativel para " + nome);
+        System.out.println("Linha " + linha + ": atribuicao nao compativel para " + nome);
     }
 
     public static void erroTipoNaoDeclarado(int linha, String nome) {
         LASemanticoUtils.adicionaErro("Linha " + linha + ": tipo " + nome + " nao declarado");
+        System.out.println("Linha " + linha + ": tipo " + nome + " nao declarado");
     }
 
     public static void erroIncompatibilidadeParametros(int linha, String nome) {
         LASemanticoUtils.adicionaErro("Linha " + linha + ": incompatibilidade de parametros na chamada de " + nome);
+        System.out.println("Linha " + linha + ": incompatibilidade de parametros na chamada de " + nome);
     }
 }
