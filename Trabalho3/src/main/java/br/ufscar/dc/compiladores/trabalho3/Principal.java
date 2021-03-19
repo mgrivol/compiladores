@@ -3,6 +3,8 @@
 
 package br.ufscar.dc.compiladores.trabalho3;
 
+import br.ufscar.dc.compiladores.trabalho3.LAParser.ProgramaContext;
+import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.LASemanticoUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import org.antlr.v4.runtime.CharStream;
@@ -37,7 +39,12 @@ public class Principal {
             
             try {
                 // caso existam erros, é retornada uma exceção e o programa encerra
-                parser.programa();
+                ProgramaContext arvore = parser.programa();
+                LASemantico las = new LASemantico();
+                las.visitPrograma(arvore);
+                for (var msg : LASemanticoUtils.erros) {
+                    writer.println(msg);
+                }
             }
             catch (ParseCancellationException exception) {
                 // as informações sobre o erro são capturadas para emissão no arquivo_saida
