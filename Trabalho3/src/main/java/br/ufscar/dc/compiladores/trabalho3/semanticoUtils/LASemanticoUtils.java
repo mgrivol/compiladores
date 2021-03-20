@@ -132,7 +132,6 @@ public class LASemanticoUtils {
                 // não encontrou nenhuma variável com mesmo nome neste escopo
                 novaVar = new Variavel(ident.getText(), tipo);
                 if (tipo.tipoCriado != null) {
-                    novaVar.criaRegistro();
                     // variável possui um tipo criado
                     for (var ts : escopo.percorrerEscoposAninhados()) {
                         // busca pelo tipo criado nos escopo
@@ -142,16 +141,7 @@ public class LASemanticoUtils {
                             if (novaVar.registro == null) {
                                 // System.out.println("registro nulo");
                             }
-                            // Por razões além do conhecimento humano, utilizando o corretor automático no windows
-                            // a função abaixo não funciona, travando o corretor sem gerar resultados. 
-                            // Ao comentar a função é possível executar o corretor mas gera erros nos casos 15 e 17
-                            // pois é uma função essencial.
-                            // Foram testados as versões java 15, 11.0.10 e 11.0.2 e nenhuma funcionou no Windows com o corretor.
-                            // Entretanto, a função funciona perfeitamente executando o código manualmente com o comando
-                            // descrito no README.md do Trabalho3.
-                            // Funcionou perfeitamente no ubuntu 20.04, acertando todos os 18 testes com o corretor e manualmente.
-                            // novaVar.setRegistro(aux.getRegistro()); // comentar essa função no Windows se for usar o corretor.
-                            novaVar.tipo = tipo;
+                            novaVar = aux;
                         }
                     }
                 }
@@ -702,7 +692,6 @@ public class LASemanticoUtils {
                     ret = verificaEquivalenciaTiposExatos(metodo.funcao.getTipoRetorno(), tipoExp);
                 }
             }
-
         }
         if (ret == null || ret.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
             erroIncompatibilidadeParametros(IDENT.getSymbol().getLine(), IDENT.getText());

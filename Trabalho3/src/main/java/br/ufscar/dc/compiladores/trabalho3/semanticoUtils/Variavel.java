@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Variavel {
 
-    String nome;
-    TipoLA tipo;
+    public String nome;
+    public TipoLA tipo;
     Ponteiro ponteiro;
     Registro registro;
     Procedimento procedimento;
@@ -40,19 +40,26 @@ public class Variavel {
     public Variavel(String nome, TipoLA tipo) {
         this.nome = nome;
         this.tipo = tipo;
-        if (this.tipo != null) {
-            if (this.tipo.tipoBasico == TipoLA.TipoBasico.REGISTRO) {
-                // esta variável é um registro
-                this.registro = new Registro();
-            } else if (this.tipo.tipoBasico == TipoLA.TipoBasico.PONTEIRO) {
-                // esta variável é um ponteiro
-                this.ponteiro = new Ponteiro(this.tipo.tipoAninhado);
-            } else if (this.tipo.tipoBasico == TipoLA.TipoBasico.FUNCAO) {
-                // esta variável é uma função
-                this.funcao = new Funcao();
-            } else if (this.tipo.tipoBasico == TipoLA.TipoBasico.PROCEDIMENTO) {
-                // esta variável é um procedimento
-                this.procedimento = new Procedimento();
+        if (this.tipo != null && this.tipo.tipoBasico != null) {
+            switch (this.tipo.tipoBasico) {
+                case REGISTRO:
+                    // esta variável é um registro
+                    this.registro = new Registro();
+                    break;
+                case PONTEIRO:
+                    // esta variável é um ponteiro
+                    this.ponteiro = new Ponteiro(this.tipo.tipoAninhado);
+                    break;
+                case FUNCAO:
+                    // esta variável é uma função
+                    this.funcao = new Funcao();
+                    break;
+                case PROCEDIMENTO:
+                    // esta variável é um procedimento
+                    this.procedimento = new Procedimento();
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -71,7 +78,7 @@ public class Variavel {
     }
 
     public class Registro {
-        public List<Variavel> variaveis;
+        private List<Variavel> variaveis;
         
         public Registro() {
             this.variaveis = new ArrayList<>();
@@ -143,10 +150,6 @@ public class Variavel {
     }
 
     // ===== Getters & Setters =====
-    public TipoLA getTipo() {
-        return tipo;
-    }
-    
     public TipoLA getTipoPonteiroAninhado() {
         return this.ponteiro.getTipoAninhado();
     }
@@ -155,35 +158,11 @@ public class Variavel {
         return this.registro.getVariavel(nome);
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setTipo(TipoLA tipo) {
-        this.tipo = tipo;
-    }
-
     public Registro getRegistro() {
         return registro;
     }
     
     public void setRegistro(Registro registro) {
         this.registro = registro;
-    }
-
-    public void criaRegistro() {
-        this.registro = new Registro();
-    }
-    
-    public Procedimento getProcedimento() {
-        return procedimento;
-    }
-
-    public void setProcedimento(Procedimento procedimento) {
-        this.procedimento = procedimento;
     }
 }
