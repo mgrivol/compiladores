@@ -67,7 +67,7 @@ public class LASemanticoUtils {
         if (ctx.cmd() != null) {
             for (var cmd : ctx.cmd()) {
                 // para cada comando dentro do procedimento
-                verificaCmd(escopo, cmd);
+                verificaCmd(escopo.obterEscopoAtual(), cmd);
             }
         }
         escopo.abandonarEscopo();
@@ -76,7 +76,7 @@ public class LASemanticoUtils {
 
     public static Variavel verificaFuncao(Escopos escopo, LAParser.Declaracao_globalContext ctx) {
         String nomeFuncao = ctx.IDENT().getText(); // IDENT contém o nome da função
-        TipoLA tipoRetorno = verificaTipoEstendido(escopo, ctx.tipo_estendido());
+        TipoLA tipoRetorno = verificaTipoEstendido(ctx.tipo_estendido());
         if (tipoRetorno.tipoBasico != null && tipoRetorno.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
             erroTipoNaoDeclarado(ctx.start.getLine(), ctx.tipo_estendido().getText());
         }
@@ -103,7 +103,7 @@ public class LASemanticoUtils {
         ret.funcao.setVariaveisLocais(declaracoes); // relaciona as variáveis com a função
         for (var cmd : ctx.cmd()) {
             // para cada comando dentro da função
-            verificaCmd(escopo, cmd);
+            verificaCmd(escopo.obterEscopoAtual(), cmd);
         }
         escopo.abandonarEscopo();
         return ret;
@@ -120,7 +120,7 @@ public class LASemanticoUtils {
     }
 
     public static List<Variavel> verificaParametro(Escopos escopo, LAParser.ParametroContext ctx) {
-        TipoLA tipo = verificaTipoEstendido(escopo, ctx.tipo_estendido());
+        TipoLA tipo = verificaTipoEstendido(ctx.tipo_estendido());
         List<Variavel> ret = new ArrayList<>();
         for (var ident : ctx.identificador()) {
             Variavel novaVar = verificaIdentificador(escopo.obterEscopoAtual(), ident);
@@ -185,7 +185,7 @@ public class LASemanticoUtils {
     //*****   Fim Declarações Locais   *****
 
     public static Variavel verificaDeclTipo(Escopos escopo, LAParser.Declaracao_localContext ctx) {
-        TipoLA tipoIDENT = verificaTipo(escopo, ctx.tipo()); // tipo do IDENT
+        TipoLA tipoIDENT = verificaTipo(ctx.tipo()); // tipo do IDENT
         if (tipoIDENT.tipoBasico != null && tipoIDENT.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
             if (tipoIDENT.tipoBasico != null && tipoIDENT.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
                 erroTipoNaoDeclarado(ctx.start.getLine(), ctx.tipo().getText());
@@ -204,31 +204,31 @@ public class LASemanticoUtils {
     }
     //*****   Fim Declarações Locais   *****
 
-    public static void verificaCmd(Escopos escopo, LAParser.CmdContext ctx) {
+    public static void verificaCmd(TabelaDeSimbolos ts, LAParser.CmdContext ctx) {
         if (ctx.cmdAtribuicao() != null) {
             System.out.println("CMD Atribuicao");
-            verificaCmdAtribuicao(escopo, ctx.cmdAtribuicao());
+            verificaCmdAtribuicao(ts, ctx.cmdAtribuicao());
         } else if (ctx.cmdEscreva() != null) {
             System.out.println("CMD Escreva");
-            verificaCmdEscreva(escopo, ctx.cmdEscreva());
+            verificaCmdEscreva(ts, ctx.cmdEscreva());
         } else if (ctx.cmdLeia() != null) {
             System.out.println("CMD Leia");
-            verificaCmdLeia(escopo, ctx.cmdLeia());
+            verificaCmdLeia(ts, ctx.cmdLeia());
         } else if (ctx.cmdEnquanto() != null) {
             System.out.println("CMD Enquanto");
-            verificaCmdEnquanto(escopo, ctx.cmdEnquanto());
+            verificaCmdEnquanto(ts, ctx.cmdEnquanto());
         } else if (ctx.cmdSe() != null) {
             System.out.println("CMD Se");
-            verificaCmdSe(escopo, ctx.cmdSe());
+            verificaCmdSe(ts, ctx.cmdSe());
         } else if (ctx.cmdFaca() != null) {
             System.out.println("CMD Faca");
-            verificaCmdFaca(escopo, ctx.cmdFaca());
+            verificaCmdFaca(ts, ctx.cmdFaca());
         } else if (ctx.cmdRetorne() != null) {
             verificaCmdRetorne(ctx.cmdRetorne());
         }
     }
 
-    public static void verificaCmdLeia(Escopos escopo, LAParser.CmdLeiaContext ctx) {
+    public static void verificaCmdLeia(TabelaDeSimbolos ts, LAParser.CmdLeiaContext ctx) {
         List<Integer> ponteiros = new ArrayList<>();
         String[] idents = ctx.getText().split(",");
         for (int i = 0; i < idents.length; i++) {
@@ -238,29 +238,29 @@ public class LASemanticoUtils {
             }
         }
         for (var ident : ctx.identificador()) {
-            Variavel v = verificaIdentificador(escopo.obterEscopoAtual(), ident);
+            Variavel v = verificaIdentificador(ts, ident);
             if (v != null && v.tipo == null) { // identificador não existe na tabela
                 erroIdentificadorNaoDeclarado(ident.getStart().getLine(), ident.getText());
             }
         }
     }
 
-    public static void verificaCmdEscreva(Escopos escopo, LAParser.CmdEscrevaContext ctx) {
+    public static void verificaCmdEscreva(TabelaDeSimbolos ts, LAParser.CmdEscrevaContext ctx) {
         for (var exp : ctx.expressao()) {
-            verificaExpressao(escopo, exp);
+            verificaExpressao(ts, exp);
         }
     }
 
-    public static void verificaCmdAtribuicao(Escopos escopo, LAParser.CmdAtribuicaoContext ctx) {
+    public static void verificaCmdAtribuicao(TabelaDeSimbolos ts, LAParser.CmdAtribuicaoContext ctx) {
         // lado esquerdo da expressão
-        Variavel esquerdo = verificaIdentificador(escopo.obterEscopoAtual(), ctx.identificador());
+        Variavel esquerdo = verificaIdentificador(ts, ctx.identificador());
         if (esquerdo.tipo == null) {
             // identificador do lado esquerdo não existe
             erroIdentificadorNaoDeclarado(ctx.identificador().start.getLine(), ctx.identificador().getText());
             return;
         }
         // lado direito da expressão
-        TipoLA direito = verificaExpressao(escopo, ctx.expressao());
+        TipoLA direito = verificaExpressao(ts, ctx.expressao());
         String pont = "";
         if (ctx.getChild(0).getText().contains("^")) {
             pont += "^";
@@ -274,22 +274,22 @@ public class LASemanticoUtils {
         }
     }
 
-    public static void verificaCmdEnquanto(Escopos escopo, LAParser.CmdEnquantoContext ctx) {
-        verificaExpressao(escopo, ctx.expressao());
+    public static void verificaCmdEnquanto(TabelaDeSimbolos ts, LAParser.CmdEnquantoContext ctx) {
+        verificaExpressao(ts, ctx.expressao());
     }
 
-    public static void verificaCmdSe(Escopos escopo, LAParser.CmdSeContext ctx) {
-        verificaExpressao(escopo, ctx.expressao());
+    public static void verificaCmdSe(TabelaDeSimbolos ts, LAParser.CmdSeContext ctx) {
+        verificaExpressao(ts, ctx.expressao());
         for (var cmd : ctx.cmd()) {
-            verificaCmd(escopo, cmd);
+            verificaCmd(ts, cmd);
         }
     }
 
-    public static void verificaCmdFaca(Escopos escopo, LAParser.CmdFacaContext ctx) {
+    public static void verificaCmdFaca(TabelaDeSimbolos ts, LAParser.CmdFacaContext ctx) {
         for (var cmd : ctx.cmd()) {
-            verificaCmd(escopo, cmd);
+            verificaCmd(ts, cmd);
         }
-        verificaExpressao(escopo, ctx.expressao());
+        verificaExpressao(ts, ctx.expressao());
     }
 
     public static void verificaCmdRetorne(LAParser.CmdRetorneContext ctx) {
@@ -301,7 +301,7 @@ public class LASemanticoUtils {
     public static List<Variavel> verificaVariavel(Escopos escopo, LAParser.VariavelContext ctx) {
         // Retorna uma lista de variaveis válidas
         List<Variavel> variaveis = new ArrayList<>();
-        TipoLA tipo = verificaTipo(escopo, ctx.tipo());
+        TipoLA tipo = verificaTipo(ctx.tipo());
         if (tipo.tipoBasico != null && tipo.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
             erroTipoNaoDeclarado(ctx.start.getLine(), ctx.tipo().getText());
         }
@@ -338,26 +338,26 @@ public class LASemanticoUtils {
         escopo.abandonarEscopo();
         return reg;
     }
-
-    public static TipoLA verificaTipo(Escopos escopo, LAParser.TipoContext ctx) {
+    
+    public static TipoLA verificaTipo(LAParser.TipoContext ctx) {
         if (ctx.registro() != null) {
             return new TipoLA(TipoLA.TipoBasico.REGISTRO);
         }
-        return verificaTipoEstendido(escopo, ctx.tipo_estendido());
+        return verificaTipoEstendido(ctx.tipo_estendido());
     }
 
-    public static TipoLA verificaTipoEstendido(Escopos escopo, LAParser.Tipo_estendidoContext ctx) {
+    public static TipoLA verificaTipoEstendido(LAParser.Tipo_estendidoContext ctx) {
         if (ctx.getChild(0).getText().contains("^")) {
             // tipo PONTEIRO
             TipoLA tipoPonteiro = new TipoLA(TipoLA.TipoBasico.PONTEIRO);
-            TipoLA tipoAponta = verificaTipoBasicoIdent(escopo, ctx.tipo_basico_ident());
+            TipoLA tipoAponta = verificaTipoBasicoIdent(ctx.tipo_basico_ident());
             // System.out.println("verifica tipo estendido encontrou PONTEIRO");
             return new TipoLA(tipoPonteiro, tipoAponta);
         }
-        return verificaTipoBasicoIdent(escopo, ctx.tipo_basico_ident());
+        return verificaTipoBasicoIdent(ctx.tipo_basico_ident());
     }
 
-    public static TipoLA verificaTipoBasicoIdent(Escopos escopo, LAParser.Tipo_basico_identContext ctx) {
+    public static TipoLA verificaTipoBasicoIdent(LAParser.Tipo_basico_identContext ctx) {
         if (ctx.tipo_basico() != null) {
             return new TipoLA(verificaTipoBasico(ctx.tipo_basico()));
         }
@@ -388,12 +388,12 @@ public class LASemanticoUtils {
         return tipo;
     }
 
-    public static TipoLA verificaExpressao(Escopos escopo, LAParser.ExpressaoContext ctx) {
-        TipoLA tipoPrimeiroTermo = verificaTermoLogico(escopo, ctx.termo_logico(0));
+    public static TipoLA verificaExpressao(TabelaDeSimbolos ts, LAParser.ExpressaoContext ctx) {
+        TipoLA tipoPrimeiroTermo = verificaTermoLogico(ts, ctx.termo_logico(0));
         if (ctx.termo_logico().size() > 1) {
             // se exitir mais de um termo_logico
             for (int i = 1; i < ctx.termo_logico().size(); i++) {
-                TipoLA tipoSegundoTermo = verificaTermoLogico(escopo, ctx.termo_logico(i));
+                TipoLA tipoSegundoTermo = verificaTermoLogico(ts, ctx.termo_logico(i));
                 // operador lógico "ou" só pode ser usado com tipos lógicos
                 tipoPrimeiroTermo = verificaEquivalenciaTipos(tipoPrimeiroTermo, tipoSegundoTermo);
             }
@@ -405,12 +405,12 @@ public class LASemanticoUtils {
         return tipoPrimeiroTermo;
     }
 
-    public static TipoLA verificaTermoLogico(Escopos escopo, LAParser.Termo_logicoContext ctx) {
-        TipoLA tipoPrimeiroFator = verificaFatorLogico(escopo, ctx.fator_logico(0));
+    public static TipoLA verificaTermoLogico(TabelaDeSimbolos ts, LAParser.Termo_logicoContext ctx) {
+        TipoLA tipoPrimeiroFator = verificaFatorLogico(ts, ctx.fator_logico(0));
         if (ctx.fator_logico().size() > 1) {
             // se exitir mais de um fator_logico
             for (int i = 1; i < ctx.fator_logico().size(); i++) {
-                TipoLA tipoSegundoFator = verificaFatorLogico(escopo, ctx.fator_logico(i));
+                TipoLA tipoSegundoFator = verificaFatorLogico(ts, ctx.fator_logico(i));
                 // operador lógico "e" só pode ser usado com os tipos
                 tipoPrimeiroFator = verificaEquivalenciaTipos(tipoPrimeiroFator, tipoSegundoFator);
             }
@@ -422,8 +422,8 @@ public class LASemanticoUtils {
         return tipoPrimeiroFator;
     }
 
-    public static TipoLA verificaFatorLogico(Escopos escopo, LAParser.Fator_logicoContext ctx) {
-        TipoLA parcelaLogica = verificaParcelaLogica(escopo, ctx.parcela_logica());
+    public static TipoLA verificaFatorLogico(TabelaDeSimbolos ts, LAParser.Fator_logicoContext ctx) {
+        TipoLA parcelaLogica = verificaParcelaLogica(ts, ctx.parcela_logica());
         if (ctx.getChild(0).getText().contains("nao")) {
             // negação é válida apenas para tipos lógicos
             return verificaEquivalenciaTipos(parcelaLogica, new TipoLA(TipoLA.TipoBasico.LOGICO));
@@ -431,11 +431,11 @@ public class LASemanticoUtils {
         return parcelaLogica;
     }
 
-    public static TipoLA verificaParcelaLogica(Escopos escopo, LAParser.Parcela_logicaContext ctx) {
+    public static TipoLA verificaParcelaLogica(TabelaDeSimbolos ts, LAParser.Parcela_logicaContext ctx) {
         TipoLA tipoParcela;
         if (ctx.exp_relacional() != null) {
             // existe exp_relacional
-            tipoParcela = verificaExpRelacional(escopo, ctx.exp_relacional());
+            tipoParcela = verificaExpRelacional(ts, ctx.exp_relacional());
         } else {
             // verdadeiro ou falso
             tipoParcela = new TipoLA(TipoLA.TipoBasico.LOGICO);
@@ -443,10 +443,10 @@ public class LASemanticoUtils {
         return tipoParcela;
     }
 
-    public static TipoLA verificaExpRelacional(Escopos escopo, LAParser.Exp_relacionalContext ctx) {
-        TipoLA tipoPrimeiraExp = verificaExpAritmetica(escopo, ctx.exp_aritmetica(0));
+    public static TipoLA verificaExpRelacional(TabelaDeSimbolos ts, LAParser.Exp_relacionalContext ctx) {
+        TipoLA tipoPrimeiraExp = verificaExpAritmetica(ts, ctx.exp_aritmetica(0));
         if (ctx.exp_aritmetica().size() > 1) {
-            TipoLA tipoSegundaExp = verificaExpAritmetica(escopo, ctx.exp_aritmetica(1));
+            TipoLA tipoSegundaExp = verificaExpAritmetica(ts, ctx.exp_aritmetica(1));
             tipoPrimeiraExp = verificaEquivalenciaTipos(tipoPrimeiraExp, tipoSegundaExp);
             if (tipoPrimeiraExp.tipoBasico != TipoLA.TipoBasico.INVALIDO) {
                 // a operção é válida, como existe outro operator, a operação é do tipo lógico
@@ -456,12 +456,12 @@ public class LASemanticoUtils {
         return tipoPrimeiraExp;
     }
 
-    public static TipoLA verificaExpAritmetica(Escopos escopo, LAParser.Exp_aritmeticaContext ctx) {
-        TipoLA tipoPrimeiroTermo = verificaTermo(escopo, ctx.termo(0));
+    public static TipoLA verificaExpAritmetica(TabelaDeSimbolos ts, LAParser.Exp_aritmeticaContext ctx) {
+        TipoLA tipoPrimeiroTermo = verificaTermo(ts, ctx.termo(0));
         if (ctx.termo().size() > 1) {
             // se existir mais de um termo
             for (int i = 1; i < ctx.termo().size(); i++) {
-                TipoLA tipoSegundoTermo = verificaTermo(escopo, ctx.termo(i));
+                TipoLA tipoSegundoTermo = verificaTermo(ts, ctx.termo(i));
                 tipoPrimeiroTermo = verificaEquivalenciaTipos(tipoPrimeiroTermo, tipoSegundoTermo);
             }
             for (var op : ctx.op1()) {
@@ -478,24 +478,24 @@ public class LASemanticoUtils {
         return tipoPrimeiroTermo;
     }
 
-    public static TipoLA verificaTermo(Escopos escopo, LAParser.TermoContext ctx) {
-        TipoLA tipoPrimeiroFator = verificaFator(escopo, ctx.fator(0));
+    public static TipoLA verificaTermo(TabelaDeSimbolos ts, LAParser.TermoContext ctx) {
+        TipoLA tipoPrimeiroFator = verificaFator(ts, ctx.fator(0));
         if (ctx.fator().size() > 1) {
             // se existir mais de um fator
             for (int i = 1; i < ctx.fator().size(); i++) {
-                TipoLA tipoSegundoFator = verificaFator(escopo, ctx.fator(i));
+                TipoLA tipoSegundoFator = verificaFator(ts, ctx.fator(i));
                 tipoPrimeiroFator = verificaEquivalenciaTipos(tipoPrimeiroFator, tipoSegundoFator);
             }
         }
         return tipoPrimeiroFator;
     }
 
-    public static TipoLA verificaFator(Escopos escopo, LAParser.FatorContext ctx) {
-        TipoLA tipoPrimeiraParcela = verificaParcela(escopo, ctx.parcela(0));
+    public static TipoLA verificaFator(TabelaDeSimbolos ts, LAParser.FatorContext ctx) {
+        TipoLA tipoPrimeiraParcela = verificaParcela(ts, ctx.parcela(0));
         if (ctx.parcela().size() > 1) {
             // se existir mais de uma parcela
             for (int i = 1; i < ctx.parcela().size(); i++) {
-                TipoLA tipoSegundaParcela = verificaParcela(escopo, ctx.parcela(i));
+                TipoLA tipoSegundaParcela = verificaParcela(ts, ctx.parcela(i));
                 // se for invalido, a primeira parcela carrega esse valor até ser retornada
                 tipoPrimeiraParcela = verificaEquivalenciaTipos(tipoPrimeiraParcela, tipoSegundaParcela);
             }
@@ -503,9 +503,9 @@ public class LASemanticoUtils {
         return tipoPrimeiraParcela;
     }
 
-    public static TipoLA verificaParcela(Escopos escopo, LAParser.ParcelaContext ctx) {
+    public static TipoLA verificaParcela(TabelaDeSimbolos ts, LAParser.ParcelaContext ctx) {
         if (ctx.parcela_unario() != null) {
-            TipoLA pUnario = verificaParcelaUnario(escopo, ctx.parcela_unario());
+            TipoLA pUnario = verificaParcelaUnario(ts, ctx.parcela_unario());
             // existe parcela_unario
             if (ctx.op_unario() != null) {
                 // existe op_unario
@@ -521,10 +521,10 @@ public class LASemanticoUtils {
             return pUnario;
         }
         // existe parcela_nao_unario
-        return verificaParcelaNaoUnario(escopo, ctx.parcela_nao_unario());
+        return verificaParcelaNaoUnario(ts, ctx.parcela_nao_unario());
     }
 
-    public static TipoLA verificaParcelaUnario(Escopos escopo, LAParser.Parcela_unarioContext ctx) {
+    public static TipoLA verificaParcelaUnario(TabelaDeSimbolos ts, LAParser.Parcela_unarioContext ctx) {
         // retorna tipo INVALIDO se identificador não existir ou se ctx.expressao() possuir tipo INVALIDO 
         if (ctx.identificador() != null) {
             // existe um identificador
@@ -532,7 +532,7 @@ public class LASemanticoUtils {
             if (ctx.getChild(0).getText().contains("^")) {
                 System.out.println("PARCELA UNARIO COM ^ =>" + ctx.getText());
             }
-            Variavel ident = verificaIdentificador(escopo.obterEscopoAtual(), ctx.identificador());
+            Variavel ident = verificaIdentificador(ts, ctx.identificador());
             if (ident.tipo == null) {
                 // identificador não existe
                 erroIdentificadorNaoDeclarado(ctx.identificador().start.getLine(), ident.nome);
@@ -540,24 +540,24 @@ public class LASemanticoUtils {
             }
             return ident.tipo;
         } else if (ctx.IDENT() != null) {
-            return verificaMetodo(escopo, ctx.IDENT(), ctx.expressao());
+            return verificaMetodo(ts, ctx.IDENT(), ctx.expressao());
         } else if (ctx.NUM_INT() != null) {
             return new TipoLA(TipoLA.TipoBasico.INTEIRO);
         } else if (ctx.NUM_REAL() != null) {
             return new TipoLA(TipoLA.TipoBasico.REAL);
         }
         // se não for nenhum caso anterior
-        TipoLA primeiraExp = verificaExpressao(escopo, ctx.expressao(0));
+        TipoLA primeiraExp = verificaExpressao(ts, ctx.expressao(0));
         if (ctx.expressao().size() > 1) {
             for (int i = 1; i < ctx.expressao().size(); i++) {
-                TipoLA segundaExp = verificaExpressao(escopo, ctx.expressao(i));
+                TipoLA segundaExp = verificaExpressao(ts, ctx.expressao(i));
                 primeiraExp = verificaEquivalenciaTipos(primeiraExp, segundaExp);
             }
         }
         return primeiraExp;
     }
 
-    public static TipoLA verificaParcelaNaoUnario(Escopos escopo, LAParser.Parcela_nao_unarioContext ctx) {
+    public static TipoLA verificaParcelaNaoUnario(TabelaDeSimbolos ts, LAParser.Parcela_nao_unarioContext ctx) {
         // retorna tipo INVALIDO se identificador não existir
         if (ctx.CADEIA() != null) {
             // se for uma CADEIA
@@ -567,7 +567,7 @@ public class LASemanticoUtils {
                 // System.out.println("PARCELA NAO UNARIO COM & =>" + ctx.getText());
                 return new TipoLA(TipoLA.TipoBasico.ENDERECO);
             }
-            Variavel ident = verificaIdentificador(escopo.obterEscopoAtual(), ctx.identificador());
+            Variavel ident = verificaIdentificador(ts, ctx.identificador());
             if (ident.tipo == null) {
                 // identificador não existe
                 erroIdentificadorNaoDeclarado(ctx.identificador().start.getLine(), ident.nome);
@@ -669,14 +669,14 @@ public class LASemanticoUtils {
         return new Variavel(null, null);
     }
 
-    public static TipoLA verificaMetodo(Escopos escopo, TerminalNode IDENT, List<LAParser.ExpressaoContext> expressoes) {
+    public static TipoLA verificaMetodo(TabelaDeSimbolos ts, TerminalNode IDENT, List<LAParser.ExpressaoContext> expressoes) {
         TipoLA ret = null;
         Variavel metodo;
-        if (!escopo.obterEscopoAtual().existe(IDENT.getText())) {
+        if (!ts.existe(IDENT.getText())) {
             System.out.println("IDENT em verifica METODO nao EXISTE");
             metodo = null;
         } else {
-            metodo = escopo.obterEscopoAtual().getVariavel(IDENT.getText());
+            metodo = ts.getVariavel(IDENT.getText());
         }
         if (metodo.funcao != null) {
             // se for um método
@@ -685,7 +685,7 @@ public class LASemanticoUtils {
                 ret = new TipoLA(TipoLA.TipoBasico.INVALIDO);
             }
             for (var exp : expressoes) {
-                TipoLA tipoExp = verificaExpressao(escopo, exp);
+                TipoLA tipoExp = verificaExpressao(ts, exp);
                 if (ret == null || ret.tipoBasico != TipoLA.TipoBasico.INVALIDO) {
                     // enquanto os tipos das expressões forem iguais aos tipos dos parâmetros
                     ret = verificaEquivalenciaTiposExatos(metodo.funcao.getTipoRetorno(), tipoExp);

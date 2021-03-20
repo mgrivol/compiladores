@@ -2,6 +2,7 @@ package br.ufscar.dc.compiladores.trabalho3;
 
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.Escopos;
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.LASemanticoUtils;
+import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.TabelaDeSimbolos;
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.Variavel;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,10 @@ import java.util.List;
 public class LASemantico extends LABaseVisitor<Void> {
 
     Escopos escopo;
+    
+    public TabelaDeSimbolos getTabelaDeSimbolos() {
+        return escopo.obterEscopoAtual();
+    }
 
     @Override
     public Void visitPrograma(LAParser.ProgramaContext ctx) {
@@ -46,7 +51,7 @@ public class LASemantico extends LABaseVisitor<Void> {
             }
         }
         for (var cmd : ctx.cmd()) {
-            LASemanticoUtils.verificaCmd(escopo, cmd);
+            LASemanticoUtils.verificaCmd(escopo.obterEscopoAtual(), cmd);
         }
         return super.visitCorpo(ctx);
     }

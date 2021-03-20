@@ -19,13 +19,6 @@ public class TipoLA {
         INVALIDO
     }
     
-    public String imprime() {
-        if (this.tipoBasico != null) {
-            return this.tipoBasico.toString();
-        }
-        return this.tipoCriado;
-    }
-    
     // Tipos criados pelo usuário
     public static List<String> tiposCriados = new ArrayList<>();
     
@@ -86,5 +79,44 @@ public class TipoLA {
                 .filter(str -> str.trim().contains(tipo))
                 .collect(Collectors.toList());
         return existe.size() > 0;
+    }
+    
+    public String imprime() {
+        String s = null;
+        if (this.tipoBasico != null) {
+            switch (tipoBasico) {
+                case INTEIRO:
+                    s = "int";
+                    break;
+                case REAL:
+                    s = "float";
+                    break;
+                case LITERAL:
+                    s = "char[100]";
+                    break;
+            }
+            return s;
+        }
+        return this.tipoCriado;
+    }
+    
+    public String imprimePorcentagem() {
+        String s = null;
+        if (this.tipoBasico != null) {
+            switch (tipoBasico) {
+                case INTEIRO:
+                    s = "%d";
+                    break;
+                case REAL:
+                    s = "%f";
+                    break;
+                case LITERAL:
+                    s = "%s";
+                    break;
+            }
+            return s;
+        }
+        System.out.println("tipolA imprimePorcentagem tem criado");
+        return this.tipoCriado;
     }
 }
