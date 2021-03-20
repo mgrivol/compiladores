@@ -11,7 +11,7 @@ public class LASemanticoUtils {
     // mensagens de erro
     public static List<String> erros = new ArrayList<>();
     // define quando é possível retornar um valor
-    public static boolean podeRetornar = false; 
+    public static boolean podeRetornar = false;
 
     public static void adicionaErro(String msg) {
         erros.add(msg);
@@ -140,7 +140,7 @@ public class LASemanticoUtils {
                         if (aux.tipo != null) {
                             novaVar = new Variavel(novaVar.nome, new TipoLA(TipoLA.TipoBasico.REGISTRO));
                             if (novaVar.registro == null) {
-                                System.out.println("registro nulo");
+                                // System.out.println("registro nulo");
                             }
                             // Por razões além do conhecimento humano, utilizando o corretor automático no windows
                             // a função abaixo não funciona, travando o corretor sem gerar resultados. 
@@ -150,13 +150,11 @@ public class LASemanticoUtils {
                             // Entretanto, a função funciona perfeitamente executando o código manualmente com o comando
                             // descrito no README.md do Trabalho3.
                             // Funcionou perfeitamente no ubuntu 20.04, acertando todos os 18 testes com o corretor e manualmente.
-                            novaVar.setRegistro(aux.getRegistro()); // comentar essa função no Windows se for usar o corretor.
+                            // novaVar.setRegistro(aux.getRegistro()); // comentar essa função no Windows se for usar o corretor.
                             novaVar.tipo = tipo;
-                        } else {
-                            System.out.println("aux nulo");
                         }
                     }
-                } 
+                }
                 escopo.obterEscopoAtual().adicionar(novaVar);
                 ret.add(novaVar);
             }
@@ -304,11 +302,11 @@ public class LASemanticoUtils {
         }
         verificaExpressao(escopo, ctx.expressao());
     }
-    
+
     public static void verificaCmdRetorne(LAParser.CmdRetorneContext ctx) {
         if (!LASemanticoUtils.podeRetornar) {
-                LASemanticoUtils.adicionaErro("Linha " + ctx.start.getLine() + ": comando retorne nao permitido nesse escopo");
-            }
+            LASemanticoUtils.adicionaErro("Linha " + ctx.start.getLine() + ": comando retorne nao permitido nesse escopo");
+        }
     }
 
     public static List<Variavel> verificaVariavel(Escopos escopo, LAParser.VariavelContext ctx) {
@@ -345,7 +343,7 @@ public class LASemanticoUtils {
         Variavel reg = new Variavel(null, new TipoLA(TipoLA.TipoBasico.REGISTRO));
         escopo.criarNovoEscopo();
         for (int i = 0; i < ctx.variavel().size(); i++) {
-//            System.out.println("var -> " + ctx.variavel(i).getText());
+            // System.out.println("var -> " + ctx.variavel(i).getText());
             reg.registro.adicionaNoRegistro(verificaVariavel(escopo, ctx.variavel(i)));
         }
         escopo.abandonarEscopo();
@@ -364,7 +362,7 @@ public class LASemanticoUtils {
             // tipo PONTEIRO
             TipoLA tipoPonteiro = new TipoLA(TipoLA.TipoBasico.PONTEIRO);
             TipoLA tipoAponta = verificaTipoBasicoIdent(escopo, ctx.tipo_basico_ident());
-//            System.out.println("verifica tipo estendido encontrou PONTEIRO");
+            // System.out.println("verifica tipo estendido encontrou PONTEIRO");
             return new TipoLA(tipoPonteiro, tipoAponta);
         }
         return verificaTipoBasicoIdent(escopo, ctx.tipo_basico_ident());
@@ -541,7 +539,7 @@ public class LASemanticoUtils {
         // retorna tipo INVALIDO se identificador não existir ou se ctx.expressao() possuir tipo INVALIDO 
         if (ctx.identificador() != null) {
             // existe um identificador
-            System.out.println(ctx.getText());
+            // System.out.println(ctx.getText());
             if (ctx.getChild(0).getText().contains("^")) {
                 System.out.println("PARCELA UNARIO COM ^ =>" + ctx.getText());
             }
@@ -577,7 +575,7 @@ public class LASemanticoUtils {
             return new TipoLA(TipoLA.TipoBasico.LITERAL);
         } else {
             if (ctx.getChild(0).getText().contains("&")) {
-                System.out.println("PARCELA NAO UNARIO COM & =>" + ctx.getText());
+                // System.out.println("PARCELA NAO UNARIO COM & =>" + ctx.getText());
                 return new TipoLA(TipoLA.TipoBasico.ENDERECO);
             }
             Variavel ident = verificaIdentificador(escopo.obterEscopoAtual(), ctx.identificador());
@@ -594,8 +592,8 @@ public class LASemanticoUtils {
         // Retorna uma variavel contendo o nome do identificador
         String nome = ctx.IDENT(0).getText();
         if (ctx.dimensao().getChildCount() != 0) {
-            System.out.println("EXISTE DIMENSAO NO IDENTIFICADOR");
-            System.out.println(ctx.dimensao().getText());
+              // System.out.println("EXISTE DIMENSAO NO IDENTIFICADOR");
+              // System.out.println(ctx.dimensao().getText());
         }
         if (ts.existe(nome)) { // tenta encontrar um identificador na tabela
             Variavel ret = ts.getVariavel(nome);
@@ -668,22 +666,17 @@ public class LASemanticoUtils {
 
     public static Variavel adicionaTipoCriado(TabelaDeSimbolos ts, Variavel v, String nome) {
         // adiciona o tipo do modeno na variavel
-            System.out.println(v.dados() + "-> pai=" + nome);
-            if (ts.existe(nome)) {
-                Variavel modelo = ts.getVariavel(nome);
-                System.out.println("modelo = " + modelo.dados());
-                if (modelo.tipo.tipoBasico == TipoLA.TipoBasico.REGISTRO) {
-                    // modelo é do tipo registro
-                    for (var reg : modelo.getRegistro().variaveis) {
-                        System.out.println("    -> " + reg.dados());
-                    }
-                    Variavel testes = new Variavel(v.nome, new TipoLA(TipoLA.TipoBasico.REGISTRO));
-                    testes.setRegistro(modelo.getRegistro());
-                    testes.tipo = v.tipo;
-                    return testes;
-                }
+        if (ts.existe(nome)) {
+            Variavel modelo = ts.getVariavel(nome);
+            if (modelo.tipo.tipoBasico == TipoLA.TipoBasico.REGISTRO) {
+                // modelo é do tipo registro
+                Variavel ret = new Variavel(v.nome, new TipoLA(TipoLA.TipoBasico.REGISTRO));
+                ret.setRegistro(modelo.getRegistro());
+                ret.tipo = v.tipo;
+                return ret;
             }
-        System.out.println("fim NULO adiciona tipo criado");
+        }
+        // System.out.println("fim NULO adiciona tipo criado");
         return new Variavel(null, null);
     }
 

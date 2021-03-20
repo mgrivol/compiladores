@@ -29,24 +29,6 @@ public class TipoLA {
     // Tipos criados pelo usuário
     public static List<String> tiposCriados = new ArrayList<>();
     
-    public static void adicionaTipoCriado(String tipo) {
-        tiposCriados.add(tipo);
-    }
-    
-    public static String getTipoCriado(String tipo) {
-        List<String> existe = tiposCriados.stream()
-                .filter(str -> str.trim().contains(tipo))
-                .collect(Collectors.toList());
-        return existe.get(0);
-    }
-    
-    public static boolean existeTipoCriado(String tipo) {
-        List<String> existe = tiposCriados.stream()
-                .filter(str -> str.trim().contains(tipo))
-                .collect(Collectors.toList());
-        return existe.size() > 0;
-    }
-    
     public TipoLA.TipoBasico tipoBasico;
     public String tipoCriado;
     
@@ -86,5 +68,23 @@ public class TipoLA {
             tipo = tipo.getTipoAninhado();
         }
         return tipo;
+    }
+    
+        public static void adicionaTipoCriado(String tipo) {
+        tiposCriados.add(tipo);
+    }
+    
+    public static String getTipoCriado(String tipo) {
+        List<String> existe = tiposCriados.stream()
+                .filter(str -> str.trim().contains(tipo))
+                .collect(Collectors.toList());
+        return existe.get(0);
+    }
+    
+    public static boolean existeTipoCriado(String tipo) {
+        List<String> existe = tiposCriados.stream()
+                .filter(str -> str.trim().contains(tipo))
+                .collect(Collectors.toList());
+        return existe.size() > 0;
     }
 }

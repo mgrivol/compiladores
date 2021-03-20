@@ -7,9 +7,6 @@ public class Variavel {
 
     String nome;
     TipoLA tipo;
-//    int inteiro;
-//    float real;
-//    String literal;
     Ponteiro ponteiro;
     Registro registro;
     Procedimento procedimento;
@@ -170,26 +167,10 @@ public class Variavel {
         this.tipo = tipo;
     }
 
-//    public float getReal() {
-//        return real;
-//    }
-//
-//    public void setReal(float real) {
-//        this.real = real;
-//    }
-//
-//    public String getLiteral() {
-//        return literal;
-//    }
-
-//    public void setLiteral(String literal) {
-//        this.literal = literal;
-//    }
-
     public Registro getRegistro() {
         return registro;
     }
-
+    
     public void setRegistro(Registro registro) {
         this.registro = registro;
     }
