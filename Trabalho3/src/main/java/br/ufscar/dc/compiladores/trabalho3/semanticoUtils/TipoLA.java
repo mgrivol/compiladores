@@ -92,7 +92,7 @@ public class TipoLA {
                     s = "float";
                     break;
                 case LITERAL:
-                    s = "char[100]";
+                    s = "char";
                     break;
             }
             return s;

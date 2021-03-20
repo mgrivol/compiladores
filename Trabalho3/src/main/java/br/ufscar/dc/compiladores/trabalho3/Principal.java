@@ -50,22 +50,23 @@ public class Principal {
                 for (var msg : LASemanticoUtils.erros) {
                     writer.println(msg);
                 }
+                System.out.println("\n---- Fim ----\n");
+                if (LASemanticoUtils.erros.isEmpty()) {
+                    // não existem erros semânticos, gera o código em C
+                    System.out.println("---- Iniciando Geracao de Codigo ----\n");
+                    las.getTabelaDeSimbolos().Imprime();
+                    LAGeradorC geradorC = new LAGeradorC(las.getTabelaDeSimbolos());
+                    geradorC.visit(arvore);
+                    System.out.println(geradorC.saida.toString());
+                    writer.print(geradorC.saida.toString());
+                    System.out.println("\n---- Fim Geracao de Codigo ----");
+                } else {
+                    System.out.println("Existem erros léxicos ou sintáticos!");
+                    writer.println("Fim da compilacao");
+                }
             } catch (ParseCancellationException exception) {
                 // as informações sobre o erro são capturadas para emissão no arquivo_saida
                 writer.println(exception.getMessage());
-            }
-            // a compilação terminou com ou sem erros, é anunciado o fim e o arquivo_saida é fechado
-            System.out.println("\n---- Fim ----\n");
-            if (LASemanticoUtils.erros.isEmpty()) {
-                // não existem erros semânticos, gera o código em C
-                System.out.println("---- Iniciando Geracao de Codigo ----\n");
-                LAGeradorC geradorC = new LAGeradorC(las.getTabelaDeSimbolos());
-                geradorC.visit(arvore);
-                System.out.println(geradorC.saida.toString());
-                writer.print(geradorC.saida.toString());
-                System.out.println("\n---- Fim Geracao de Codigo ----");
-            } else {
-                writer.println("Fim da compilacao");
             }
             writer.close();
         }

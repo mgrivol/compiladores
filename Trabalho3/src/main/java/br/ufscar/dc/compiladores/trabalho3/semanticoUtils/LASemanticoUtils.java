@@ -613,7 +613,7 @@ public class LASemanticoUtils {
                 || (a.tipoBasico == TipoLA.TipoBasico.INTEIRO && b.tipoBasico == TipoLA.TipoBasico.REAL)
                 || (a.tipoBasico == TipoLA.TipoBasico.INTEIRO && b.tipoBasico == TipoLA.TipoBasico.INTEIRO)) {
             // define tipo INTEIRO
-            t.tipoBasico = TipoLA.TipoBasico.INTEIRO;
+            t.tipoBasico = TipoLA.TipoBasico.REAL;
         } else if (a.tipoBasico == TipoLA.TipoBasico.LITERAL && b.tipoBasico == TipoLA.TipoBasico.LITERAL) {
             // define tipo LITERAL
             t.tipoBasico = TipoLA.TipoBasico.LITERAL;

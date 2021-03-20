@@ -23,7 +23,7 @@ IDENT
 // espaços em branco
 WS 
 : 
-    ( ' ' | '\t' | '\r' | '\n' ) -> skip
+    ( ' ' | '\t' | '\r' | '\n' | '\r\n' ) -> skip
 ;
 
 COMENTARIO 
@@ -154,7 +154,7 @@ cmdEscreva
 
 cmdSe
 :
-    'se' expressao 'entao' (cmd)* ('senao' (cmd)*)? 'fim_se'
+    'se' expressao 'entao' (cmd1+=cmd)* ('senao' (cmd2+=cmd)*)? 'fim_se'
 ;
 
 cmdCaso
