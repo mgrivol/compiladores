@@ -2,7 +2,6 @@ package br.ufscar.dc.compiladores.trabalho3;
 
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.Escopos;
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.LASemanticoUtils;
-import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.TipoLA;
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.Variavel;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class LASemantico extends LABaseVisitor<Void> {
         } else {
             entrada = LASemanticoUtils.verificaDeclLocal(escopo, ctx.declaracao_local());
         }
-        if (entrada.size() == 0) {
+        if (entrada.isEmpty()) {
             System.out.println("entrada nula na declaracao global");
         } else {
             for (var v : entrada) {

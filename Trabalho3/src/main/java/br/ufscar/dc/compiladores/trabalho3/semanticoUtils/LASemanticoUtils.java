@@ -3,7 +3,6 @@ package br.ufscar.dc.compiladores.trabalho3.semanticoUtils;
 import br.ufscar.dc.compiladores.trabalho3.LAParser;
 import java.util.ArrayList;
 import java.util.List;
-import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class LASemanticoUtils {
