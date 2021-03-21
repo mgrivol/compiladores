@@ -96,6 +96,10 @@ public class Variavel {
             }
             return null;
         }
+        
+        public List<Variavel> getTodasVariaveis() {
+            return variaveis;
+        }
     }
     
     public class Funcao {

@@ -254,21 +254,22 @@ public class LASemanticoUtils {
     public static void verificaCmdAtribuicao(TabelaDeSimbolos ts, LAParser.CmdAtribuicaoContext ctx) {
         // lado esquerdo da expressão
         Variavel esquerdo = verificaIdentificador(ts, ctx.identificador());
-        if (esquerdo.tipo == null) {
+        TipoLA tipoEsquerdo = esquerdo.tipo;
+        if (tipoEsquerdo == null) {
             // identificador do lado esquerdo não existe
             erroIdentificadorNaoDeclarado(ctx.identificador().start.getLine(), ctx.identificador().getText());
             return;
         }
         // lado direito da expressão
-        TipoLA direito = verificaExpressao(ts, ctx.expressao());
+        TipoLA tipoDireito = verificaExpressao(ts, ctx.expressao());
         String pont = "";
         if (ctx.getChild(0).getText().contains("^")) {
             pont += "^";
-            esquerdo.tipo = esquerdo.getTipoPonteiroAninhado();
+            tipoEsquerdo = esquerdo.getTipoPonteiroAninhado();
         }
-        if (esquerdo.tipo.tipoBasico != null && direito.tipoBasico != null) {
+        if (tipoEsquerdo.tipoBasico != null && tipoDireito.tipoBasico != null) {
             // se for um tipo padrão
-            if (verificaEquivalenciaTipos(esquerdo.tipo, direito).tipoBasico == TipoLA.TipoBasico.INVALIDO) {
+            if (verificaEquivalenciaTipos(tipoEsquerdo, tipoDireito).tipoBasico == TipoLA.TipoBasico.INVALIDO) {
                 erroAtribuicaoIncompativel(ctx.identificador().start.getLine(), pont + ctx.identificador().getText());
             }
         }
@@ -612,7 +613,7 @@ public class LASemanticoUtils {
                 || (a.tipoBasico == TipoLA.TipoBasico.REAL && b.tipoBasico == TipoLA.TipoBasico.INTEIRO)
                 || (a.tipoBasico == TipoLA.TipoBasico.INTEIRO && b.tipoBasico == TipoLA.TipoBasico.REAL)
                 || (a.tipoBasico == TipoLA.TipoBasico.INTEIRO && b.tipoBasico == TipoLA.TipoBasico.INTEIRO)) {
-            // define tipo INTEIRO
+            // define tipo REAL
             t.tipoBasico = TipoLA.TipoBasico.REAL;
         } else if (a.tipoBasico == TipoLA.TipoBasico.LITERAL && b.tipoBasico == TipoLA.TipoBasico.LITERAL) {
             // define tipo LITERAL

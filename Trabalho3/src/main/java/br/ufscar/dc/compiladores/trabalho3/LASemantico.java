@@ -53,6 +53,7 @@ public class LASemantico extends LABaseVisitor<Void> {
         for (var cmd : ctx.cmd()) {
             LASemanticoUtils.verificaCmd(escopo.obterEscopoAtual(), cmd);
         }
+        escopo.obterEscopoAtual().Imprime();
         return super.visitCorpo(ctx);
     }
 }
