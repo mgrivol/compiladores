@@ -223,6 +223,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
             System.out.println(ident.dados());
             geraVariavel(ident);
             if (!id.dimensao().exp_aritmetica().isEmpty()){
+                // se existe algum valor dentro da dimensão
                 visitDimensao(id.dimensao());
             }
             saida.append(";\n");

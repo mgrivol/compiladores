@@ -67,6 +67,7 @@ public class Principal {
             } catch (ParseCancellationException exception) {
                 // as informações sobre o erro são capturadas para emissão no arquivo_saida
                 writer.println(exception.getMessage());
+                writer.println("Fim da compilacao");
             }
             writer.close();
         }
