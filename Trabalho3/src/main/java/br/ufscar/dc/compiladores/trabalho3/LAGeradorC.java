@@ -5,22 +5,25 @@ import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.LASemanticoUtils;
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.TabelaDeSimbolos;
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.TipoLA;
 import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.Variavel;
+import java.util.List;
 
 public class LAGeradorC extends LABaseVisitor<Void> {
 
     StringBuilder saida;
-    TabelaDeSimbolos tabela;
+    Escopos escopo;
+    Variavel aux;
 
-    public LAGeradorC(TabelaDeSimbolos ts) {
+    public LAGeradorC(Escopos escopo) {
         this.saida = new StringBuilder();
-        this.tabela = ts;
-        tabela.Imprime();
+        this.escopo = escopo;
+        escopo.obterEscopoAtual().Imprime();
     }
 
     @Override
     public Void visitPrograma(LAParser.ProgramaContext ctx) {
         saida.append("#include <stdio.h>\n");
-        saida.append("#include <stdlib.h>\n\n");
+        saida.append("#include <stdlib.h>\n");
+        saida.append("#include <string.h>\n\n");
 
         if (!ctx.declaracoes().isEmpty()) {
             visitDeclaracoes(ctx.declaracoes());
@@ -50,6 +53,99 @@ public class LAGeradorC extends LABaseVisitor<Void> {
             visitDeclaracao_global(ctx.declaracao_global());
         }
         return null;
+    }
+    
+    @Override
+    public Void visitDeclaracao_global(LAParser.Declaracao_globalContext ctx) {
+        switch (ctx.getChild(0).getText()) {
+            case "procedimento":
+                visitaProcedimento(ctx);
+                break;
+            case "funcao":
+                visitaFuncao(ctx);
+                break;
+        }
+        return null;
+    }
+    
+    public void visitaProcedimento(LAParser.Declaracao_globalContext ctx) {
+        Variavel proc = escopo.obterEscopoAtual().getVariavel(ctx.IDENT().getText());
+        saida.append("void " + proc.nome + "(");
+        List<Variavel> parametros = proc.getProcedimento().getParametros();
+        if (parametros.get(0).tipo.tipoBasico == TipoLA.TipoBasico.LITERAL) {
+            saida.append(parametros.get(0).tipo.imprime() + " *" + parametros.get(0).nome);
+        } else {
+            saida.append(parametros.get(0).tipo.imprime() + " " + parametros.get(0).nome);
+        }
+        for (int i = 1; i < parametros.size(); i++) {
+            saida.append(", ");
+            if (parametros.get(i).tipo.tipoBasico == TipoLA.TipoBasico.LITERAL) {
+                saida.append(parametros.get(i).tipo.imprime() + " *" + parametros.get(0).nome);
+            } else {
+                geraVariavel(parametros.get(i));
+            }
+        }
+        saida.append(") {\n");
+        for (var decl : ctx.declaracao_local()) {
+            visitDeclaracao_local(decl);
+        }
+        // atualiza o escopo local com os parametros e declaracoes para serem reconhecidos nos comandos
+        escopo.criarNovoEscopo();
+        for (var v : parametros) {
+            // atualiza o escopo com os parametros
+            escopo.obterEscopoAtual().adicionar(v);
+        }
+        for (var v : proc.getProcedimento().getVariaveisLocais()) {
+            // visita cada comando existente
+            escopo.obterEscopoAtual().adicionar(v);
+        }
+        for (var cmd : ctx.cmd()) {
+            // visita cada comando existente
+            visitCmd(cmd);
+        }
+        escopo.abandonarEscopo();
+        saida.append("}\n");
+        return;
+    } 
+    
+    public void visitaFuncao(LAParser.Declaracao_globalContext ctx) {
+        Variavel funcao = escopo.obterEscopoAtual().getVariavel(ctx.IDENT().getText());
+        saida.append(funcao.getFuncao().getTipoRetorno().imprime() + " " + funcao.nome + "(");
+        List<Variavel> parametros = funcao.getFuncao().getParametros();
+        if (parametros.get(0).tipo.tipoBasico == TipoLA.TipoBasico.LITERAL) {
+            saida.append(parametros.get(0).tipo.imprime() + " *" + parametros.get(0).nome);
+        } else {
+            saida.append(parametros.get(0).tipo.imprime() + " " + parametros.get(0).nome);
+        }
+        for (int i = 1; i < parametros.size(); i++) {
+            saida.append(", ");
+            if (parametros.get(i).tipo.tipoBasico == TipoLA.TipoBasico.LITERAL) {
+                saida.append(parametros.get(i).tipo.imprime() + " *" + parametros.get(i).nome);
+            } else {
+                geraVariavel(parametros.get(i));
+            }
+        }
+        saida.append(") {\n");
+        for (var decl : ctx.declaracao_local()) {
+            visitDeclaracao_local(decl);
+        }
+        // atualiza o escopo local com os parametros e declaracoes para serem reconhecidos nos comandos
+        escopo.criarNovoEscopo();
+        for (var v : parametros) {
+            // atualiza o escopo com os parametros
+            escopo.obterEscopoAtual().adicionar(v);
+        }
+        for (var v : funcao.getFuncao().getVariaveisLocais()) {
+            // atualiza o escopo com as variaveis locais
+            escopo.obterEscopoAtual().adicionar(v);
+        }
+        for (var cmd : ctx.cmd()) {
+            // visita cada comando existente
+            visitCmd(cmd);
+        }
+        escopo.abandonarEscopo();
+        saida.append("}\n");
+        return;
     }
     
     @Override
@@ -104,50 +200,88 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                 visitValor_constante(ctx.valor_constante());
                 break;
             case "tipo":
-                System.out.println("tipo");
+                saida.append("typedef struct {\n");
+                this.aux = escopo.obterEscopoAtual().getVariavel(ctx.IDENT().getText());
+                visitTipo(ctx.tipo());
+                saida.append("} " + ctx.IDENT().getText() + ";\n");
                 break;
         }
         return null;
     }
-
-    // --- Variáveis ---
+    
+    // --- Variáveis e Tipos ---
     @Override
     public Void visitVariavel(LAParser.VariavelContext ctx) {
         for (var id : ctx.identificador()) {
-            Variavel ident = tabela.getVariavel(id.getText());
+            System.out.println(id.getText());
+            // nome armazena a variavel sem considerar a dimensao
+            String nome = id.IDENT(0).getText();
+            for (int i = 1; i < id.IDENT().size(); i++) {
+                nome += "." + id.IDENT(i).getText();
+            }
+            Variavel ident = escopo.obterEscopoAtual().getVariavel(nome);
+            System.out.println(ident.dados());
             geraVariavel(ident);
+            if (!id.dimensao().exp_aritmetica().isEmpty()){
+                visitDimensao(id.dimensao());
+            }
+            saida.append(";\n");
         }
         return null;
     }
     
     public void geraVariavel(Variavel v) {
-        if (v.tipo != null) {
-                switch (v.tipo.tipoBasico) {
-                    case LITERAL:
-                        saida.append(String.format("%s %s[100];\n", v.tipo.imprime(), v.nome));
-                        break;
-                    case PONTEIRO:
-                        saida.append(String.format("%s *%s;\n", v.getTipoPonteiroAninhado().imprime(), v.nome));
-                        break;
-                    case REGISTRO:
-                        saida.append("struct {\n");
-                        for (var vReg : v.getRegistro().getTodasVariaveis()) {
-                            geraVariavel(vReg);
-                        }
-                        saida.append("} " + v.nome + ";\n");
-                        break;
-                    case INTEIRO:
-                        // inteiro
-                        saida.append(String.format("%s %s;\n", v.tipo.imprime(), v.nome));
-                        break;
-                    case REAL:
-                        // real
-                        saida.append(String.format("%s %s;\n", v.tipo.imprime(), v.nome));
-                        break;
-                }
+        if (v.tipo != null && v.tipo.tipoBasico != null) {
+            switch (v.tipo.tipoBasico) {
+                case LITERAL:
+                    saida.append(String.format("%s %s[100]", v.tipo.imprime(), v.nome));
+                    break;
+                case PONTEIRO:
+                    saida.append(String.format("%s *%s", v.getTipoPonteiroAninhado().imprime(), v.nome));
+                    break;
+                case REGISTRO:
+                    saida.append("struct {\n");
+                    for (var vReg : v.getRegistro().getTodasVariaveis()) {
+                        geraVariavel(vReg);
+                        saida.append(";\n");
+                    }
+                    saida.append("} " + v.nome);
+                    break;
+                case INTEIRO:
+                    // inteiro
+                    saida.append(String.format("%s %s", v.tipo.imprime(), v.nome));
+                    break;
+                case REAL:
+                    // real
+                    saida.append(String.format("%s %s", v.tipo.imprime(), v.nome));
+                    break;
             }
+        } else {
+            saida.append(String.format("%s %s", v.tipo.tipoCriado, v.nome));
+        }
     }
-    // --- Fim Variáveis ---
+    
+    @Override
+    public Void visitTipo(LAParser.TipoContext ctx) {
+        if (ctx.registro() != null) {
+            // existe registro
+            visitRegistro(ctx.registro());
+        } else {
+            // existe tipo_estendido
+        }
+        return null;
+    }
+    
+    @Override
+    public Void visitRegistro(LAParser.RegistroContext ctx) {
+        List<Variavel> varsNoRegistro = aux.getRegistro().getTodasVariaveis();
+        for (var v : aux.getRegistro().getTodasVariaveis()) {
+            geraVariavel(v);
+            saida.append(";\n");
+        }
+        return null;
+    }
+    // --- Fim Variáveis e Tipos ---
     
     // --- Comandos ---
     @Override 
@@ -177,13 +311,19 @@ public class LAGeradorC extends LABaseVisitor<Void> {
         } else if (ctx.cmdFaca() != null) {
             // existe comando faca
             visitCmdFaca(ctx.cmdFaca());
+        } else if (ctx.cmdChamada() != null) {
+            // existe comando chamda
+            visitCmdChamada(ctx.cmdChamada());
+        } else if (ctx.cmdRetorne() != null) {
+            // existe comando retorne
+            visitCmdRetorne(ctx.cmdRetorne());
         }
         return null;
     }
     
     @Override
     public Void visitCmdLeia(LAParser.CmdLeiaContext ctx) {
-        Variavel ident = tabela.getVariavel(ctx.identificador(0).getText());
+        Variavel ident = escopo.obterEscopoAtual().getVariavel(ctx.identificador(0).getText());
         saida.append(String.format("scanf(\"%s\", &%s);\n", ident.tipo.imprimePorcentagem(), ident.nome));
         return null;
     }
@@ -191,7 +331,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     @Override
     public Void visitCmdEscreva(LAParser.CmdEscrevaContext ctx) {
         for (var exp : ctx.expressao()) {
-            TipoLA tipoExp = LASemanticoUtils.verificaExpressao(tabela, exp);
+            TipoLA tipoExp = LASemanticoUtils.verificaExpressao(escopo.obterEscopoAtual(), exp);
             saida.append(String.format("printf(\"%s\", ", tipoExp.imprimePorcentagem()));
             visitExpressao(exp);
             saida.append(");\n");
@@ -204,7 +344,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
         if (ctx.getChild(0).getText().equals("^")) {
             saida.append("*");
         }
-        Variavel ident = LASemanticoUtils.verificaIdentificador(tabela, ctx.identificador());
+        Variavel ident = LASemanticoUtils.verificaIdentificador(escopo.obterEscopoAtual(), ctx.identificador());
         if (ident.tipo != null && ident.tipo.tipoBasico != TipoLA.TipoBasico.LITERAL) {
             visitIdentificador(ctx.identificador());
             saida.append(" = ");
@@ -262,7 +402,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
         // gera o código do comando para
         // cria um foor-loop
         saida.append("for (");
-        Variavel ident = tabela.getVariavel(ctx.IDENT().getText());
+        Variavel ident = escopo.obterEscopoAtual().getVariavel(ctx.IDENT().getText());
         // for( X; _; _)
         saida.append(ident.nome + " = ");
         visitExp_aritmetica(ctx.inicio); 
@@ -311,6 +451,28 @@ public class LAGeradorC extends LABaseVisitor<Void> {
         saida.append("} while (");
         visitExpressao(ctx.expressao());
         saida.append(");\n");
+        return null;
+    }
+    
+    @Override
+    public Void visitCmdChamada(LAParser.CmdChamadaContext ctx) {
+        // gera o código do comando chamada
+        // cria uma chamada de função ou procedimento
+        saida.append(ctx.IDENT().getText() + "(");
+        visitExpressao(ctx.expressao(0));
+        for (int i = 1; i < ctx.expressao().size(); i++) {
+            saida.append(", ");
+            visitExpressao(ctx.expressao(i));
+        }
+        saida.append(");\n");
+        return null;
+    }
+    
+    @Override
+    public Void visitCmdRetorne(LAParser.CmdRetorneContext ctx) {
+        saida.append("return ");
+        visitExpressao(ctx.expressao());
+        saida.append(";\n");
         return null;
     }
     // -- Fim Comandos ---
@@ -488,7 +650,13 @@ public class LAGeradorC extends LABaseVisitor<Void> {
             }
             visitIdentificador(ctx.identificador());
         } else if (ctx.IDENT() != null) {
-            saida.append("PARCELA UNARIO COM IDENTIFICADOR");
+            saida.append(ctx.IDENT().getText() + "(");
+            visitExpressao(ctx.expressao(0));
+            for (int i = 1; i < ctx.expressao().size(); i++) {
+                saida.append(", ");
+                visitExpressao(ctx.expressao(i));
+            }
+            saida.append(")");
         } else if (ctx.NUM_INT() != null) {
             saida.append(ctx.NUM_INT().getText());
         } else if (ctx.NUM_REAL() != null) {

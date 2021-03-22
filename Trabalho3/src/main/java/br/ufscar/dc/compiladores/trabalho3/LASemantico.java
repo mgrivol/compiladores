@@ -11,8 +11,8 @@ public class LASemantico extends LABaseVisitor<Void> {
 
     Escopos escopo;
     
-    public TabelaDeSimbolos getTabelaDeSimbolos() {
-        return escopo.obterEscopoAtual();
+    public Escopos getEscopos() {
+        return escopo;
     }
 
     @Override

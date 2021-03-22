@@ -54,8 +54,8 @@ public class Principal {
                 if (LASemanticoUtils.erros.isEmpty()) {
                     // não existem erros semânticos, gera o código em C
                     System.out.println("---- Iniciando Geracao de Codigo ----\n");
-                    las.getTabelaDeSimbolos().Imprime();
-                    LAGeradorC geradorC = new LAGeradorC(las.getTabelaDeSimbolos());
+                    las.getEscopos().obterEscopoAtual().Imprime();
+                    LAGeradorC geradorC = new LAGeradorC(las.getEscopos());
                     geradorC.visit(arvore);
                     System.out.println(geradorC.saida.toString());
                     writer.print(geradorC.saida.toString());

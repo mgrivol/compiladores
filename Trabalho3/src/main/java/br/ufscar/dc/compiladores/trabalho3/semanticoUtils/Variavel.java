@@ -169,4 +169,12 @@ public class Variavel {
     public void setRegistro(Registro registro) {
         this.registro = registro;
     }
+    
+    public Procedimento getProcedimento() {
+        return this.procedimento;
+    }
+    
+    public Funcao getFuncao() {
+        return this.funcao;
+    }
 }
