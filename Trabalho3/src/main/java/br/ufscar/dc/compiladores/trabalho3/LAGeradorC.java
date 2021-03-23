@@ -8,7 +8,8 @@ import br.ufscar.dc.compiladores.trabalho3.semanticoUtils.Variavel;
 import java.util.List;
 
 public class LAGeradorC extends LABaseVisitor<Void> {
-
+    // gera o código em C de um arquivo em Linguagem Algoritmica
+    
     StringBuilder saida;
     Escopos escopo;
     Variavel aux;
@@ -16,11 +17,11 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     public LAGeradorC(Escopos escopo) {
         this.saida = new StringBuilder();
         this.escopo = escopo;
-        escopo.obterEscopoAtual().Imprime();
     }
 
     @Override
     public Void visitPrograma(LAParser.ProgramaContext ctx) {
+        // visita o programa
         saida.append("#include <stdio.h>\n");
         saida.append("#include <stdlib.h>\n");
         saida.append("#include <string.h>\n\n");
@@ -36,6 +37,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     // --- Declarações Globais antes da main ---
     @Override
     public Void visitDeclaracoes(LAParser.DeclaracoesContext ctx) {
+        // visita as declaracoes
         for (var decl : ctx.decl_local_global()) {
             // para cada decl_local_global
             visitDecl_local_global(decl);
@@ -45,6 +47,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitDecl_local_global(LAParser.Decl_local_globalContext ctx) {
+        // visita a decl_local_global
         if (ctx.declaracao_local() != null) {
             // existe uma declaração local
             visitDeclaracao_local(ctx.declaracao_local());
@@ -57,6 +60,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitDeclaracao_global(LAParser.Declaracao_globalContext ctx) {
+        // visita a declaracao_global
         switch (ctx.getChild(0).getText()) {
             case "procedimento":
                 visitaProcedimento(ctx);
@@ -69,6 +73,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     }
     
     public void visitaProcedimento(LAParser.Declaracao_globalContext ctx) {
+        // gera o código de um procedimento
         Variavel proc = escopo.obterEscopoAtual().getVariavel(ctx.IDENT().getText());
         saida.append("void " + proc.nome + "(");
         List<Variavel> parametros = proc.getProcedimento().getParametros();
@@ -78,6 +83,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
             saida.append(parametros.get(0).tipo.imprime() + " " + parametros.get(0).nome);
         }
         for (int i = 1; i < parametros.size(); i++) {
+            // existe mais de um parâmetro
             saida.append(", ");
             if (parametros.get(i).tipo.tipoBasico == TipoLA.TipoBasico.LITERAL) {
                 saida.append(parametros.get(i).tipo.imprime() + " *" + parametros.get(0).nome);
@@ -109,6 +115,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     } 
     
     public void visitaFuncao(LAParser.Declaracao_globalContext ctx) {
+        // gera o códico de uma função
         Variavel funcao = escopo.obterEscopoAtual().getVariavel(ctx.IDENT().getText());
         saida.append(funcao.getFuncao().getTipoRetorno().imprime() + " " + funcao.nome + "(");
         List<Variavel> parametros = funcao.getFuncao().getParametros();
@@ -118,6 +125,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
             saida.append(parametros.get(0).tipo.imprime() + " " + parametros.get(0).nome);
         }
         for (int i = 1; i < parametros.size(); i++) {
+            // existe mais de um parâmetro na função
             saida.append(", ");
             if (parametros.get(i).tipo.tipoBasico == TipoLA.TipoBasico.LITERAL) {
                 saida.append(parametros.get(i).tipo.imprime() + " *" + parametros.get(i).nome);
@@ -150,6 +158,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitValor_constante(LAParser.Valor_constanteContext ctx) {
+        // gera o código de uma constante
         if (ctx.CADEIA() != null) {
             // se o valor constante for uma cadeia de caracteres
             saida.append("\"" + ctx.CADEIA().getText() + "\"\n");
@@ -173,6 +182,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     // --- Corpo - main ---
     @Override
     public Void visitCorpo(LAParser.CorpoContext ctx) {
+        // gera o código do corpo
         saida.append("int main() {\n");
 
         for (var decl : ctx.declaracao_local()) {
@@ -190,6 +200,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitDeclaracao_local(LAParser.Declaracao_localContext ctx) {
+        // gera o código de uma declaracao_local
         String tipoDeclaracao = ctx.getChild(0).getText();
         switch (tipoDeclaracao) {
             case "declare":
@@ -212,6 +223,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     // --- Variáveis e Tipos ---
     @Override
     public Void visitVariavel(LAParser.VariavelContext ctx) {
+        // avalia uma variável
         for (var id : ctx.identificador()) {
             System.out.println(id.getText());
             // nome armazena a variavel sem considerar a dimensao
@@ -220,7 +232,6 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                 nome += "." + id.IDENT(i).getText();
             }
             Variavel ident = escopo.obterEscopoAtual().getVariavel(nome);
-            System.out.println(ident.dados());
             geraVariavel(ident);
             if (!id.dimensao().exp_aritmetica().isEmpty()){
                 // se existe algum valor dentro da dimensão
@@ -232,15 +243,19 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     }
     
     public void geraVariavel(Variavel v) {
+        // gera o código de uma variável
         if (v.tipo != null && v.tipo.tipoBasico != null) {
             switch (v.tipo.tipoBasico) {
                 case LITERAL:
+                    // literal
                     saida.append(String.format("%s %s[100]", v.tipo.imprime(), v.nome));
                     break;
                 case PONTEIRO:
+                    // ponteiro
                     saida.append(String.format("%s *%s", v.getTipoPonteiroAninhado().imprime(), v.nome));
                     break;
                 case REGISTRO:
+                    // registro
                     saida.append("struct {\n");
                     for (var vReg : v.getRegistro().getTodasVariaveis()) {
                         geraVariavel(vReg);
@@ -258,12 +273,14 @@ public class LAGeradorC extends LABaseVisitor<Void> {
                     break;
             }
         } else {
+            // tipo criado
             saida.append(String.format("%s %s", v.tipo.tipoCriado, v.nome));
         }
     }
     
     @Override
     public Void visitTipo(LAParser.TipoContext ctx) {
+        // visita o tipo
         if (ctx.registro() != null) {
             // existe registro
             visitRegistro(ctx.registro());
@@ -275,6 +292,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitRegistro(LAParser.RegistroContext ctx) {
+        // gera o código de um registro
         List<Variavel> varsNoRegistro = aux.getRegistro().getTodasVariaveis();
         for (var v : aux.getRegistro().getTodasVariaveis()) {
             geraVariavel(v);
@@ -324,6 +342,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitCmdLeia(LAParser.CmdLeiaContext ctx) {
+        // gera o código do comando leia
         Variavel ident = escopo.obterEscopoAtual().getVariavel(ctx.identificador(0).getText());
         saida.append(String.format("scanf(\"%s\", &%s);\n", ident.tipo.imprimePorcentagem(), ident.nome));
         return null;
@@ -331,6 +350,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
 
     @Override
     public Void visitCmdEscreva(LAParser.CmdEscrevaContext ctx) {
+        // gera o código do comando escreva
         for (var exp : ctx.expressao()) {
             TipoLA tipoExp = LASemanticoUtils.verificaExpressao(escopo.obterEscopoAtual(), exp);
             saida.append(String.format("printf(\"%s\", ", tipoExp.imprimePorcentagem()));
@@ -342,6 +362,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override 
     public Void visitCmdAtribuicao(LAParser.CmdAtribuicaoContext ctx) {
+        // gera o código do comando atribuicao
         if (ctx.getChild(0).getText().equals("^")) {
             saida.append("*");
         }
@@ -361,6 +382,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitCmdSe(LAParser.CmdSeContext ctx) {
+        // gera o código do comando se
         saida.append("if (");
         visitExpressao(ctx.expressao());
         saida.append(") {\n");
@@ -471,6 +493,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitCmdRetorne(LAParser.CmdRetorneContext ctx) {
+        // gera o código do comando retorne
         saida.append("return ");
         visitExpressao(ctx.expressao());
         saida.append(";\n");
@@ -481,6 +504,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     // -- Seleção ---
     @Override
     public Void visitSelecao(LAParser.SelecaoContext ctx) {
+        // gera o código de uma seleção
         for (var itemSelecao : ctx.item_selecao()) {
             // visita cada item_selecao
             visitItem_selecao(itemSelecao);
@@ -491,6 +515,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitItem_selecao(LAParser.Item_selecaoContext ctx) {
+        // visita um item de umca seleção
         visitConstantes(ctx.constantes());
         for (var cmd : ctx.cmd()) {
             // visita cada comando
@@ -501,6 +526,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitConstantes(LAParser.ConstantesContext ctx) {
+        // visita uma constante
         visitNumero_intervalo(ctx.numero_intervalo(0));
         for (int i = 1; i < ctx.numero_intervalo().size(); i++) {
             visitNumero_intervalo(ctx.numero_intervalo(i));
@@ -510,6 +536,8 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitNumero_intervalo(LAParser.Numero_intervaloContext ctx) {
+        // gera o código de um numero_intervalo
+        // case de um switch 
         int comeco, fim;
         if (ctx.opUnario1 != null) {
             comeco = -Integer.parseInt(ctx.NUM_INT(0).getText());
@@ -533,6 +561,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     // --- Expressão ---
     @Override
     public Void visitExpressao(LAParser.ExpressaoContext ctx) {
+        // gera o código de uma expressão
         visitTermo_logico(ctx.termo_logico(0));
         for (int i = 0; i < ctx.op_logico_1().size(); i++) {
             saida.append(" || ");
@@ -543,6 +572,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitTermo_logico(LAParser.Termo_logicoContext ctx) {
+        // gera o código de um termo_logico
         visitFator_logico(ctx.fator_logico(0));
         for (int i = 0; i < ctx.op_logico_2().size(); i++) {
             saida.append(" && ");
@@ -553,6 +583,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitFator_logico(LAParser.Fator_logicoContext ctx) {
+        // gera o código de um fator_logico
         if (ctx.getChild(0).getText().equals("nao")) {
             saida.append("!");
         }
@@ -562,6 +593,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitParcela_logica(LAParser.Parcela_logicaContext ctx) {
+        // gera o código de uma parcela_logica
         if (ctx.exp_relacional() != null) {
             visitExp_relacional(ctx.exp_relacional());
             return null;
@@ -576,6 +608,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitExp_relacional(LAParser.Exp_relacionalContext ctx) {
+        // gera o código de uma exp_relacional
         visitExp_aritmetica(ctx.exp_aritmetica(0));
         if (ctx.op_relacional() != null) {
             visitOp_relacional(ctx.op_relacional());
@@ -586,6 +619,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitOp_relacional(LAParser.Op_relacionalContext ctx) {
+        // gera o código de um op_relacional
         switch (ctx.getText()) {
             case "=":
                 saida.append(" == ");
@@ -602,6 +636,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitExp_aritmetica(LAParser.Exp_aritmeticaContext ctx) {
+        // gera o código de uma exp_aritmetica
         visitTermo(ctx.termo(0));
         for (int i = 0; i < ctx.op1().size(); i++) {
             saida.append(" " + ctx.op1(i).getText() + " ");
@@ -612,6 +647,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitTermo(LAParser.TermoContext ctx) {
+        // gera o código de um termo
         visitFator(ctx.fator(0));
         for (int i = 0; i < ctx.op2().size(); i++) {
             saida.append(" " + ctx.op2(i).getText() + " ");
@@ -622,6 +658,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitFator(LAParser.FatorContext ctx) {
+        // gera o código de um fator
         visitParcela(ctx.parcela(0));
         for (int i = 0; i < ctx.op3().size(); i++) {
             saida.append(" " + ctx.op3(i).getText() + " ");
@@ -632,6 +669,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitParcela(LAParser.ParcelaContext ctx) {
+        // gera o código de uma parcela
         if (ctx.parcela_unario() != null) {
             if (ctx.op_unario() != null) {
                 saida.append(" " + ctx.op_unario().getText());
@@ -645,26 +683,33 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitParcela_unario(LAParser.Parcela_unarioContext ctx) {
+        // gera o código de uma parcela_unario
         if (ctx.identificador() != null) {
+            // possui identificador
             if (ctx.getChild(0).getText().equals("^")) {
                 saida.append("*");
             }
             visitIdentificador(ctx.identificador());
         } else if (ctx.IDENT() != null) {
+            // possui IDENT
             saida.append(ctx.IDENT().getText() + "(");
             visitExpressao(ctx.expressao(0));
             for (int i = 1; i < ctx.expressao().size(); i++) {
+                // para cada expressao
                 saida.append(", ");
                 visitExpressao(ctx.expressao(i));
             }
             saida.append(")");
         } else if (ctx.NUM_INT() != null) {
+            // possui número inteiro
             saida.append(ctx.NUM_INT().getText());
         } else if (ctx.NUM_REAL() != null) {
+            // possui número real
             saida.append(ctx.NUM_REAL().getText());
         } else {
             saida.append("(");
             for (var exp : ctx.expressao()) {
+                // para cada expressão
                 visitExpressao(exp);
             }
             saida.append(")");
@@ -674,6 +719,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitParcela_nao_unario(LAParser.Parcela_nao_unarioContext ctx) {
+        // gera o código de uma parcela_nao_unario
         if (ctx.identificador() != null) {
             if (ctx.getChild(0).getText().equals("&")) {
                 saida.append("&");
@@ -689,8 +735,10 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     // --- Identificador ---
     @Override
     public Void visitIdentificador(LAParser.IdentificadorContext ctx) {
+        // gera o código de um identificador
         saida.append(ctx.IDENT(0).getText());
         for (int i = 1; i < ctx.IDENT().size(); i++) {
+            // para cada IDENT
             saida.append(".");
             saida.append(ctx.IDENT(i).getText());
         }
@@ -702,6 +750,7 @@ public class LAGeradorC extends LABaseVisitor<Void> {
     
     @Override
     public Void visitDimensao(LAParser.DimensaoContext ctx) {
+        // gera o código de uma dimensão
         saida.append("[");
         for (var exp : ctx.exp_aritmetica()) {
             visitExp_aritmetica(exp);

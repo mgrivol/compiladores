@@ -4,38 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Variavel {
-
     public String nome;
     public TipoLA tipo;
     Ponteiro ponteiro;
     Registro registro;
     Procedimento procedimento;
     Funcao funcao;
-    
-    // TEMPORARIO
-    public String tipoToString() {
-        if (tipo.tipoBasico != null) {
-            return "" + tipo.tipoBasico;
-        } else if (tipo.tipoCriado != null) {
-            return "" + tipo.tipoCriado;
-        }
-        return "OS DOIS SAO NULOS";
-    }
-    // TEMPORARIO
-    public String dados() {
-        String ponteiro = "";
-        if (this.ponteiro != null) {
-            ponteiro += this.getTipoPonteiroAninhado().tipoBasico;
-        }
-        if (this.tipo.tipoBasico == TipoLA.TipoBasico.REGISTRO) {
-            System.out.println("------imprimindo variaveis do registro");
-            for (var v : this.registro.variaveis) {
-                System.out.println("       v-reg->" + v.dados());
-            }
-            System.out.println("-------acabou, o registro");
-        }
-        return "<" + nome + ", " + tipoToString() + ">" + "->" + ponteiro;
-    }
     
     public Variavel(String nome, TipoLA tipo) {
         this.nome = nome;
@@ -65,6 +39,7 @@ public class Variavel {
     }
     
     public class Ponteiro {
+        // armazena dados de um ponteiro
         private TipoLA apontaPara;
         
         public Ponteiro (TipoLA apontaPara) {
@@ -78,6 +53,7 @@ public class Variavel {
     }
 
     public class Registro {
+        // armazena dados de um registro
         private List<Variavel> variaveis;
         
         public Registro() {
@@ -103,6 +79,7 @@ public class Variavel {
     }
     
     public class Funcao {
+        // armazena dados de uma função
         private TipoLA tipoRetorno;
         private List<Variavel> variaveisLocais;
         private List<Variavel> parametros;
@@ -133,6 +110,7 @@ public class Variavel {
     }
 
     public class Procedimento {
+        // armazena dados de um procedimento
         private List<Variavel> variaveisLocais;
         private List<Variavel> parametros;
         

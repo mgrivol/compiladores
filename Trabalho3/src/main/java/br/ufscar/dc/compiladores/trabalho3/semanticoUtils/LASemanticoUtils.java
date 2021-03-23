@@ -18,6 +18,7 @@ public class LASemanticoUtils {
 
     //*****   Declarações Globais   *****
     public static Variavel verificaDeclGlobal(Escopos escopo, LAParser.Declaracao_globalContext ctx) {
+        // visita as declarações globais
         System.out.println("!global!");
         String decl = ctx.start.getText();
         Variavel entrada = null;
@@ -75,6 +76,7 @@ public class LASemanticoUtils {
     }
 
     public static Variavel verificaFuncao(Escopos escopo, LAParser.Declaracao_globalContext ctx) {
+        // retorna uma Variavel que contém todos os dados relevantes da função
         String nomeFuncao = ctx.IDENT().getText(); // IDENT contém o nome da função
         TipoLA tipoRetorno = verificaTipoEstendido(ctx.tipo_estendido());
         if (tipoRetorno.tipoBasico != null && tipoRetorno.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
@@ -111,6 +113,7 @@ public class LASemanticoUtils {
     }
 
     public static List<Variavel> verificaParametros(Escopos escopo, LAParser.ParametrosContext ctx) {
+        // retorna uma lista de parâmetros
         List<Variavel> ret = new ArrayList<>();
         for (var parametro : ctx.parametro()) {
             // para cada parâmetro
@@ -120,6 +123,7 @@ public class LASemanticoUtils {
     }
 
     public static List<Variavel> verificaParametro(Escopos escopo, LAParser.ParametroContext ctx) {
+        // retorna uma lista de parâmetros
         TipoLA tipo = verificaTipoEstendido(ctx.tipo_estendido());
         List<Variavel> ret = new ArrayList<>();
         for (var ident : ctx.identificador()) {
@@ -154,6 +158,7 @@ public class LASemanticoUtils {
 
     //*****   Declaracão Local   *****
     public static List<Variavel> verificaDeclLocal(Escopos escopo, LAParser.Declaracao_localContext ctx) {
+        // retorna uma lista de variáveis da declaração
         String decl = ctx.getStart().getText();
         List<Variavel> variaveis = new ArrayList<>();
         switch (decl) {
@@ -174,6 +179,7 @@ public class LASemanticoUtils {
     }
 
     public static Variavel verificaDeclConstante(Escopos escopo, LAParser.Declaracao_localContext ctx) {
+        // cria uma variável do tipo "constante"
         TipoLA tipo = new TipoLA(verificaTipoBasico(ctx.tipo_basico())); // tipo do IDENT
         if (tipo.tipoBasico != null && tipo.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
             erroTipoNaoDeclarado(ctx.start.getLine(), ctx.tipo().getText());
@@ -185,6 +191,7 @@ public class LASemanticoUtils {
     //*****   Fim Declarações Locais   *****
 
     public static Variavel verificaDeclTipo(Escopos escopo, LAParser.Declaracao_localContext ctx) {
+        // cria uma variável de uma declaração "tipo"
         TipoLA tipoIDENT = verificaTipo(ctx.tipo()); // tipo do IDENT
         if (tipoIDENT.tipoBasico != null && tipoIDENT.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
             if (tipoIDENT.tipoBasico != null && tipoIDENT.tipoBasico == TipoLA.TipoBasico.INVALIDO) {
@@ -197,14 +204,13 @@ public class LASemanticoUtils {
         Variavel novoTipo = new Variavel(nome, tipoIDENT);
         if (novoTipo.tipo.tipoBasico == TipoLA.TipoBasico.REGISTRO) {
             novoTipo.registro = verificaRegistro(escopo, ctx.tipo().registro()).registro;
-        } else if (tipoIDENT.tipoCriado != null) {
-            System.out.println("TIPO CUSTOM NO TIPO CUSTOM");
         }
         return novoTipo;
     }
     //*****   Fim Declarações Locais   *****
 
     public static void verificaCmd(TabelaDeSimbolos ts, LAParser.CmdContext ctx) {
+        // verifica os comandos
         if (ctx.cmdAtribuicao() != null) {
             System.out.println("CMD Atribuicao");
             verificaCmdAtribuicao(ts, ctx.cmdAtribuicao());
@@ -229,6 +235,7 @@ public class LASemanticoUtils {
     }
 
     public static void verificaCmdLeia(TabelaDeSimbolos ts, LAParser.CmdLeiaContext ctx) {
+        // verifica o comando leia
         List<Integer> ponteiros = new ArrayList<>();
         String[] idents = ctx.getText().split(",");
         for (int i = 0; i < idents.length; i++) {
@@ -246,12 +253,14 @@ public class LASemanticoUtils {
     }
 
     public static void verificaCmdEscreva(TabelaDeSimbolos ts, LAParser.CmdEscrevaContext ctx) {
+        // verifica o comando escreva
         for (var exp : ctx.expressao()) {
             verificaExpressao(ts, exp);
         }
     }
 
     public static void verificaCmdAtribuicao(TabelaDeSimbolos ts, LAParser.CmdAtribuicaoContext ctx) {
+        // verifica o comando atribuicao
         // lado esquerdo da expressão
         Variavel esquerdo = verificaIdentificador(ts, ctx.identificador());
         TipoLA tipoEsquerdo = esquerdo.tipo;
@@ -276,10 +285,12 @@ public class LASemanticoUtils {
     }
 
     public static void verificaCmdEnquanto(TabelaDeSimbolos ts, LAParser.CmdEnquantoContext ctx) {
+        // verifica o comando enquanto
         verificaExpressao(ts, ctx.expressao());
     }
 
     public static void verificaCmdSe(TabelaDeSimbolos ts, LAParser.CmdSeContext ctx) {
+        // verifica o comando se
         verificaExpressao(ts, ctx.expressao());
         for (var cmd : ctx.cmd()) {
             verificaCmd(ts, cmd);
@@ -287,6 +298,7 @@ public class LASemanticoUtils {
     }
 
     public static void verificaCmdFaca(TabelaDeSimbolos ts, LAParser.CmdFacaContext ctx) {
+        // verifica o comando faca
         for (var cmd : ctx.cmd()) {
             verificaCmd(ts, cmd);
         }
@@ -294,6 +306,7 @@ public class LASemanticoUtils {
     }
 
     public static void verificaCmdRetorne(LAParser.CmdRetorneContext ctx) {
+        // verifica o comando retorne
         if (!LASemanticoUtils.podeRetornar) {
             LASemanticoUtils.adicionaErro("Linha " + ctx.start.getLine() + ": comando retorne nao permitido nesse escopo");
         }
@@ -330,6 +343,7 @@ public class LASemanticoUtils {
     }
 
     public static Variavel verificaRegistro(Escopos escopo, LAParser.RegistroContext ctx) {
+        // cria um novo registro e adiciona as variáveis
         Variavel reg = new Variavel(null, new TipoLA(TipoLA.TipoBasico.REGISTRO));
         escopo.criarNovoEscopo();
         for (int i = 0; i < ctx.variavel().size(); i++) {
@@ -341,6 +355,7 @@ public class LASemanticoUtils {
     }
     
     public static TipoLA verificaTipo(LAParser.TipoContext ctx) {
+        // verifica o tipo de um ctx.tipo()
         if (ctx.registro() != null) {
             return new TipoLA(TipoLA.TipoBasico.REGISTRO);
         }
@@ -348,6 +363,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaTipoEstendido(LAParser.Tipo_estendidoContext ctx) {
+        // verifica o tipo de um tipo_estendido
         if (ctx.getChild(0).getText().contains("^")) {
             // tipo PONTEIRO
             TipoLA tipoPonteiro = new TipoLA(TipoLA.TipoBasico.PONTEIRO);
@@ -359,6 +375,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaTipoBasicoIdent(LAParser.Tipo_basico_identContext ctx) {
+        // verifica o tipo de um tipo_basico_ident
         if (ctx.tipo_basico() != null) {
             return new TipoLA(verificaTipoBasico(ctx.tipo_basico()));
         }
@@ -390,6 +407,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaExpressao(TabelaDeSimbolos ts, LAParser.ExpressaoContext ctx) {
+        // verifica o tipo de uma expressao
         TipoLA tipoPrimeiroTermo = verificaTermoLogico(ts, ctx.termo_logico(0));
         if (ctx.termo_logico().size() > 1) {
             // se exitir mais de um termo_logico
@@ -407,6 +425,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaTermoLogico(TabelaDeSimbolos ts, LAParser.Termo_logicoContext ctx) {
+        // verifica o tipo de um termo_logico
         TipoLA tipoPrimeiroFator = verificaFatorLogico(ts, ctx.fator_logico(0));
         if (ctx.fator_logico().size() > 1) {
             // se exitir mais de um fator_logico
@@ -424,6 +443,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaFatorLogico(TabelaDeSimbolos ts, LAParser.Fator_logicoContext ctx) {
+        // verifica o tipo de um fator_logico
         TipoLA parcelaLogica = verificaParcelaLogica(ts, ctx.parcela_logica());
         if (ctx.getChild(0).getText().contains("nao")) {
             // negação é válida apenas para tipos lógicos
@@ -433,6 +453,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaParcelaLogica(TabelaDeSimbolos ts, LAParser.Parcela_logicaContext ctx) {
+        // verifica o tipo de uma parcela_logica
         TipoLA tipoParcela;
         if (ctx.exp_relacional() != null) {
             // existe exp_relacional
@@ -445,6 +466,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaExpRelacional(TabelaDeSimbolos ts, LAParser.Exp_relacionalContext ctx) {
+        // verifica o tipo de uma exp_relacional
         TipoLA tipoPrimeiraExp = verificaExpAritmetica(ts, ctx.exp_aritmetica(0));
         if (ctx.exp_aritmetica().size() > 1) {
             TipoLA tipoSegundaExp = verificaExpAritmetica(ts, ctx.exp_aritmetica(1));
@@ -458,6 +480,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaExpAritmetica(TabelaDeSimbolos ts, LAParser.Exp_aritmeticaContext ctx) {
+        // verifica o tipo de uma exp_aritmetica
         TipoLA tipoPrimeiroTermo = verificaTermo(ts, ctx.termo(0));
         if (ctx.termo().size() > 1) {
             // se existir mais de um termo
@@ -480,6 +503,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaTermo(TabelaDeSimbolos ts, LAParser.TermoContext ctx) {
+        // verifica o tipo de um termo
         TipoLA tipoPrimeiroFator = verificaFator(ts, ctx.fator(0));
         if (ctx.fator().size() > 1) {
             // se existir mais de um fator
@@ -492,6 +516,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaFator(TabelaDeSimbolos ts, LAParser.FatorContext ctx) {
+        // verifica o tipo de um fator
         TipoLA tipoPrimeiraParcela = verificaParcela(ts, ctx.parcela(0));
         if (ctx.parcela().size() > 1) {
             // se existir mais de uma parcela
@@ -505,6 +530,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaParcela(TabelaDeSimbolos ts, LAParser.ParcelaContext ctx) {
+        // verifica o tipo da parcela lógica
         if (ctx.parcela_unario() != null) {
             TipoLA pUnario = verificaParcelaUnario(ts, ctx.parcela_unario());
             // existe parcela_unario
@@ -605,6 +631,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaEquivalenciaTipos(TipoLA a, TipoLA b) {
+        // verifica a equivalência "lógica" entre dois tipos
         TipoLA t = new TipoLA(TipoLA.TipoBasico.INVALIDO);
         if (a.tipoBasico == TipoLA.TipoBasico.PONTEIRO && b.tipoBasico == TipoLA.TipoBasico.ENDERECO) {
             // define tipo PONTEIRO
@@ -630,6 +657,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaEquivalenciaTiposExatos(TipoLA a, TipoLA b) {
+        // verifica a equivalência exata entre dois tipos
         TipoLA t = new TipoLA(TipoLA.TipoBasico.INVALIDO);
         if (a.tipoBasico == TipoLA.TipoBasico.ENDERECO && b.tipoBasico == TipoLA.TipoBasico.PONTEIRO) {
             // define tipo PONTEIRO
@@ -671,6 +699,7 @@ public class LASemanticoUtils {
     }
 
     public static TipoLA verificaMetodo(TabelaDeSimbolos ts, TerminalNode IDENT, List<LAParser.ExpressaoContext> expressoes) {
+        // verifica os parâmetros do método
         TipoLA ret = null;
         Variavel metodo;
         if (!ts.existe(IDENT.getText())) {

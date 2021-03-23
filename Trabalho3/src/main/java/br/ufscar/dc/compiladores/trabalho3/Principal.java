@@ -13,7 +13,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public class Principal {
 
-    // classe Principal é responsável por realizar a análise sintática da linguagem LA
+    // classe Principal é responsável por realizar a análise semântica da linguagem LA
     public static void main(String[] args) throws IOException {
         /* para executar é necessário passar dois argumentos:
             (arquivo_entrada, arquivo_saida) com os respectivos caminhos.
@@ -37,31 +37,27 @@ public class Principal {
             // a classe é adicionada para receber erros do parser
             parser.addErrorListener(erro);
 
+            // arvore contém a árvore com todas as regras da linguagem
             ProgramaContext arvore = null;
+            // las realiza a análise semântica
             LASemantico las = new LASemantico();
             boolean codigoC = false;
             try {
                 // caso existam erros, é retornada uma exceção e o programa encerra
                 arvore = parser.programa();
-                System.out.println("---- Iniciando Analise Semantica ----\n");
                 las.visitPrograma(arvore);
-                System.out.println("\n---- Analise Semantica Concluida ----\n");
                 // existem erros semânticos
                 for (var msg : LASemanticoUtils.erros) {
                     writer.println(msg);
                 }
-                System.out.println("\n---- Fim ----\n");
                 if (LASemanticoUtils.erros.isEmpty()) {
                     // não existem erros semânticos, gera o código em C
-                    System.out.println("---- Iniciando Geracao de Codigo ----\n");
-                    las.getEscopos().obterEscopoAtual().Imprime();
                     LAGeradorC geradorC = new LAGeradorC(las.getEscopos());
+                    // geradorC visita a árvore
                     geradorC.visit(arvore);
-                    System.out.println(geradorC.saida.toString());
+                    // imprime o resultado no arquivo_saida
                     writer.print(geradorC.saida.toString());
-                    System.out.println("\n---- Fim Geracao de Codigo ----");
                 } else {
-                    System.out.println("Existem erros léxicos ou sintáticos!");
                     writer.println("Fim da compilacao");
                 }
             } catch (ParseCancellationException exception) {
