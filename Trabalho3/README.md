@@ -2,7 +2,7 @@
 **Aluno: Marco Antônio Bernardi Grivol**\
 **RA: 758619**
 
-Analisador sintático para a linguagem LA é um programa que recebe como entrada um arquivo contendo um algoritmo escrito na linguagem LA e retorna qualquer erro sintático existente.
+Analisador semântico para a linguagem LA é um programa que recebe como entrada um arquivo contendo um algoritmo escrito na linguagem LA e retorna qualquer erro sintático existente.
 
 ## Instalação
 Os seguintes programas devem ser instalados:
