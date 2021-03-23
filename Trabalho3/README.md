@@ -6,7 +6,7 @@ Analisador semântico para a linguagem LA é um programa que recebe como entrada
 
 ## Instalação
 Os seguintes programas devem ser instalados:
-1. Java [openjdk 11.0.10](https://openjdk.java.net/) ou equivalente.
+1. [Java JDK 11.0.10](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) ou equivalente.
 3. [Apache NetBeans IDE 12.2](https://netbeans.apache.org/) ou equivalente.
 
 Acesse o sites e siga as instruções de instalação. No caso do SO Windows 10, verifique a instalação digitando os seguintes comandos:\
