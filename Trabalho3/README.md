@@ -25,4 +25,4 @@ Ulize o arquivo "Trabalho3-1.0-SNAPSHOT-jar-with-dependencies.jar" ou realize a 
 ``java -jar LOCAL_CLONE/compiladores/Trabalho3/target/Trabalho3-1.0-SNAPSHOT-jar-with-dependencies.jar ARQUIVO_ENTRADA ARQUIVO_SAIDA``
 * LOCAL_CLONE: é o caminho até o diretório contendo o repositório da etapa anterior.
 * ARQUIVO_ENTRADA: é o caminho até o arquivo .txt contendo a linguagem LA que será realizada a análise semântica.
-* ARQUIVO_SAIDA: é o caminho onde será gerada a saída com as mensagens de compilação.
+* ARQUIVO_SAIDA: é o caminho onde será gerada a saída com as mensagens de compilação ou código C.
