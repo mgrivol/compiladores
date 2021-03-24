@@ -28,5 +28,5 @@ Na barra de ferramentas da IDE, selecione **Clean and Build Project**.
 Ulize o arquivo "Trabalho2-1.0-SNAPSHOT-jar-with-dependencies.jar" ou realize a compilação do projeto, acesse o terminal e digite: \
 ``java -jar LOCAL_CLONE/compiladores/Trabalho2/target/Trabalho2-1.0-SNAPSHOT-jar-with-dependencies.jar ARQUIVO_ENTRADA ARQUIVO_SAIDA``
 * LOCAL_CLONE: é o caminho até o diretório contendo o repositório da etapa anterior.
-* ARQUIVO_ENTRADA: é o caminho até o arquivo .txt contendo a linguagem LA que será realizada a análise léxica.
+* ARQUIVO_ENTRADA: é o caminho até o arquivo .txt contendo a linguagem LA que será realizada a análise sintática.
 * ARQUIVO_SAIDA: é o caminho onde será gerada a saída com as mensagens de compilação.
