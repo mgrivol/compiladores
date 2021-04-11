@@ -4,31 +4,10 @@
 // lexemas da linguagem TGEN
 grammar TGEN;
 
-/*
-RESERVED :
-    'inimigos'
-    | 'forca'
-    | 'vida'
-    | 'velocidade'
-    | 'modelo'
-    | 'start'
-    | 'onda'
-    | 'end'
-    | 'aguarde'
+WS : 
+    ( ' ' | '\t' | '\r' | '\n' | '\r\n' ) -> skip
 ;
-*/
-/*
-DELIM :
-    '{'
-    | '}'
-    | '='
-    | ';'
-    | ':'
-    | '('
-    | ')'
-    | ','
-;
-*/
+
 programa :
     inimigos 'start' ondas 'end'
 ;
@@ -42,6 +21,7 @@ parametroInimigo :
     parInimigoForca
     | parInimigoVelocidade
     | parInimigoVida
+    | parInimigoModelo
 ;
 parInimigoForca :
     'forca' '=' INT
@@ -51,6 +31,9 @@ parInimigoVelocidade :
 ;
 parInimigoVida :
     'vida' '=' INT 
+;
+parInimigoModelo :
+    'modelo' '=' CADEIA
 ;
 ondas :
     ( onda )+
@@ -84,11 +67,17 @@ FLOAT :
 IDENT :
     ( 'a'..'z' | 'A'..'Z' ) ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
 ;
-WS : 
-    ( ' ' | '\t' | '\r' | '\n' | '\r\n' ) -> skip
-;
 COMENTARIO :
-    '//' ~( '\n' )* '\n' -> skip
+    '%' ~( '\n' | '%' )* '%' -> skip
+;
+ERRO_COMENTARIO :
+    '%' ~( '%' )* '\n'
+;
+CADEIA :
+    '"' ~('"' | '\n')* '"'
+;
+ERRO_CADEIA :
+    '"' ~('"')* '\n'
 ;
 ERRO_DESCONHECIDO :
     .

@@ -1,14 +1,24 @@
 package br.ufscar.dc.compiladores.trabalho4;
 
+import br.ufscar.dc.compiladores.trabalho4.SemanticoUtils.Inimigo;
+import br.ufscar.dc.compiladores.trabalho4.SemanticoUtils.SemanticoUtils;
+import br.ufscar.dc.compiladores.trabalho4.SemanticoUtils.TabelaDeSimbolos;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Semantico extends TGENBaseVisitor<Void> {
     // realiza a análise semântica
 
-    // tabela de símbolos
-    Set<String> ts = new HashSet<>();
+    TabelaDeSimbolos ts;
     
+    public Semantico() {
+        ts = new TabelaDeSimbolos();
+    }
+    
+    public TabelaDeSimbolos getTabelaDeSimbolos() {
+        return ts;
+    }
+
     @Override
     public Void visitPrograma(TGENParser.ProgramaContext ctx) {
         // visita o programa
@@ -18,21 +28,14 @@ public class Semantico extends TGENBaseVisitor<Void> {
     @Override
     public Void visitInimigos(TGENParser.InimigosContext ctx) {
         System.out.println("encontrei inimigos:");
-        for (var inimigo : ctx.inimigo()) {
-            System.out.println("inimigo -> " + inimigo.getText());
-            if (SemanticoUtils.verificaInimigo(inimigo, ts)) {
-                // inimigo válido
-                ts.add(inimigo.IDENT().getText());
+        for (var i : ctx.inimigo()) {
+            System.out.println("inimigo -> " + i.getText());
+            // verifique os parâmetros do inimigo
+            Inimigo inimigo = SemanticoUtils.verificaInimigo(i);
+            if (!ts.existe(inimigo.getNome())) {
+                // inimigo não existe na tabela, adicione
+                ts.adicionar(inimigo);
             }
-        }
-        return null;
-    }
-    
-    @Override
-    public Void visitOndas(TGENParser.OndasContext ctx) {
-        System.out.println("encontrei ondas: ");
-        for (var o : ctx.onda()) {
-            System.out.println("onda -> " + o.getText());
         }
         return null;
     }
