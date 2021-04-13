@@ -50,7 +50,7 @@ public class GeradorCS extends TGENBaseVisitor<Void> {
         visitInimigos(ctx.inimigos());
         // criando o código das ondas
         visitOndas(ctx.ondas());
-        saida.append("}\n");
+        saida.append("}\n\n");
         return null;
     }
 

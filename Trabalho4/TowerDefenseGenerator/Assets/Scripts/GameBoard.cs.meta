@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 78529cb0b08ec3741ae5c3b368c4b9c1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - ground: {instanceID: 0}
+  - tilePrefab: {instanceID: 0}
+  - gridTexture: {fileID: 2800000, guid: 75efe369b4e7d6543b5408a50ac6a52c, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
