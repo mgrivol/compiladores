@@ -27,6 +27,7 @@
 
 # Visual Studio cache directory
 /Trabalho4/TowerDefenseGenerator/.vs/
+/Trabalho4/TowerDefenseGenerator/.vscode/
 
 # Gradle cache directory
 /Trabalho4/TowerDefenseGenerator/.gradle/
