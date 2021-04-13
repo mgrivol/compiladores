@@ -46,7 +46,7 @@ end
 A linguagem permite inúmeros inimigos, cada um deve possuir um nome único definido por `IDENT`. Um inimigo pode ou não conter os atributos mencionados na seção anterior, os atributos podem ser declarados da seguinte forma:
 ```
 forca = INT;            % INT    := valores naturais                       %
-modelo = CADEIA;	    % CADEIA := qualquer coisa entre aspas "cadeia"    %
+modelo = CADEIA;	% CADEIA := qualquer coisa entre aspas "cadeia"    %
 vida = FLOAT;	        % FLOAT  := valores reais                          %
 velocidade = FLOAT;
 ```
@@ -55,7 +55,7 @@ Um inimigo pode ou não possuir atributos, caso um atributo não seja declarado,
 ### Ondas
 Ondas são definidas entre `start` e `end`. Cada onda deve possuir pelo menos um dos três comandos:
 ```
-IDENT(INT);			 % Nascer N inimigos. N := INT                                          %
+IDENT(INT);	     % Nascer N inimigos. N := INT                                          %
 IDENT(INT, FLOAT);   % Nascer (1 inimigo a cada X segundos) N vezes. N := INT e X := FLOAT   %
 aguarde(FLOAT);      % Aguarde X segundos antes de realizar a próxima instrução. X := FLOAT %
 ```
@@ -66,28 +66,28 @@ inimigos {
     % definindo inimigos %
     A {
         vida = 100.0;
-	    forca = 10;
-	    velocidade = 2.0;
-	    modelo = "PEQUENO";
+	forca = 10;
+	velocidade = 2.0;
+	modelo = "PEQUENO";
     }
     B {
         vida = 300.0;
-	    forca = 30;
-	    velocidade = 1.25;
+	forca = 30;
+	velocidade = 1.25;
         % modelo padrão será "MEDIO" %
     }
 }
 start
     % definindo ondas %
-    onda {					% primeira onda %
-		A(10);         		% nascer 10 inimigos do tipo A %
+    onda {	            % primeira onda %
+	A(10);              % nascer 10 inimigos do tipo A %
         aguarde(5.0);       % aguarde 10.0 antes da próxima instrução %
-		B(2); 
-		aguarde(5.0);
+	B(2); 
+	aguarde(5.0);
     }
-    onda {					% segunda onda %
-		B(5, 1.5);    		% nascer 5 inimigos do tipo B com intervalo de 1.5 %
-		aguarde(4.0);
+    onda {				% segunda onda %
+	B(5, 1.5);    		% nascer 5 inimigos do tipo B com intervalo de 1.5 %
+	aguarde(4.0);
         A(10);
     }
 end
