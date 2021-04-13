@@ -41,13 +41,13 @@ public class SemanticoUtils {
         int forca = Integer.parseInt(ctx.INT().getText());
         if (forca == 0) {
             adicionaErro(String.format(
-                    "Erro linha %d: forca deve ser maior que 0", ctx.start.getLine()
+                    "Linha %d: forca deve ser maior que 0", ctx.start.getLine()
             ));
             return -1;
         }
         else if (forca > 100) {
             adicionaErro(String.format(
-                    "Erro linha %d: forca deve ser menor ou igual a 100", ctx.start.getLine()
+                    "Linha %d: forca deve ser menor ou igual a 100", ctx.start.getLine()
             ));
             return -1;
         }
@@ -59,13 +59,13 @@ public class SemanticoUtils {
         float velocidade = Float.parseFloat(ctx.FLOAT().getText());
         if (velocidade < 0.1f) {
             adicionaErro(String.format(
-                    "Erro linha %d: velocidade deve ser maior ou igual a 0.1", ctx.start.getLine()
+                    "Linha %d: velocidade deve ser maior ou igual a 0.1", ctx.start.getLine()
             ));
             return -1f;
         }
         else if (velocidade > 4f) {
             adicionaErro(String.format(
-                    "Erro linha %d: velocidade deve ser menor ou igual a 4", ctx.start.getLine()
+                    "Linha %d: velocidade deve ser menor ou igual a 4.0", ctx.start.getLine()
             ));
             return -1f;
         }
@@ -74,16 +74,16 @@ public class SemanticoUtils {
     
     public static float verificaParInimigoVida(TGENParser.ParInimigoVidaContext ctx) {
         // verifica limites inferiores e superiores
-        int vida = Integer.parseInt(ctx.INT().getText());
-        if (vida == 0) {
+        float vida = Float.parseFloat(ctx.FLOAT().getText());
+        if (vida == 0f) {
             adicionaErro(String.format(
-                    "Erro linha %d: vida deve ser maior que 0", ctx.start.getLine()
+                    "Linha %d: vida deve ser maior que 0.0", ctx.start.getLine()
             ));
             return -1f;
         }
-        else if (vida > 1000) {
+        else if (vida > 1000f) {
             adicionaErro(String.format(
-                    "Erro linha %d: vida deve ser menor que 1000", ctx.start.getLine()
+                    "Linha %d: vida deve ser menor ou igual a 1000.0", ctx.start.getLine()
             ));
             return -1f;
         }
@@ -102,11 +102,76 @@ public class SemanticoUtils {
                 return cadeia;
             default:
                 adicionaErro(String.format(
-                        "Erro linha %d: modelo %s nao e valido", 
+                        "Linha %d: modelo %s nao e valido", 
                         ctx.start.getLine(), cadeia
                 ));
                 break;
         }
         return null;
+    }
+    
+    public static void verificaOnda(TGENParser.OndaContext ctx, TabelaDeSimbolos ts) {
+        // verifica os comandos da onda
+        for (var cmd : ctx.comando()) {
+            // verifica cada comando
+            if (cmd.cmdSpawn() != null) {
+                // comando spawn
+                verificaCmdSpawn(cmd.cmdSpawn(), ts);
+            }
+            else {
+                // comando aguarde
+                verificaCmdAguarde(cmd.cmdAguarde());
+            }
+        }
+    }
+    
+    public static void verificaCmdSpawn(TGENParser.CmdSpawnContext ctx, TabelaDeSimbolos ts) {
+        // verifica o comando spawn
+        if (ctx.semDelay() != null) {
+            // comando spawn sem delay
+            String nomeInimigo = ctx.semDelay().IDENT().getText();
+            int quantidade = Integer.parseInt(ctx.semDelay().INT().getText());
+            verificaInimigoQuantidade(nomeInimigo, quantidade, ctx.start.getLine(), ts);
+            return;
+        }
+        // comando spawn com delay
+        String nomeInimigo = ctx.comDelay().IDENT().getText();
+        int quantidade = Integer.parseInt(ctx.comDelay().INT().getText());
+        float delay = Float.parseFloat(ctx.comDelay().FLOAT().getText());
+        verificaInimigoQuantidade(nomeInimigo, quantidade, ctx.start.getLine(), ts);
+        verificaDelay(delay, ctx.start.getLine());
+    }
+    
+    public static void verificaCmdAguarde(TGENParser.CmdAguardeContext ctx) {
+        // verifica o comando aguarde
+        float delay = Float.parseFloat(ctx.FLOAT().getText());
+        verificaDelay(delay, ctx.start.getLine());
+    }
+    
+    public static void verificaInimigoQuantidade(String nomeInimigo, int quantidade, int line, TabelaDeSimbolos ts) {
+        // verifica se inimigo existe e quantidade é válida
+        if (!ts.existe(nomeInimigo)) {
+            // inimigo nao declarado
+            adicionaErro(String.format(
+                    "Linha %d: inimigo %s nao declarado",
+                    line, nomeInimigo
+            ));
+        }
+        if (quantidade <= 0) {
+            // quantidade invalida
+            adicionaErro(String.format(
+                    "Linha %d: quantidade de inimigos deve ser maior que 0",
+                    line
+            ));
+        }
+    }
+    
+    public static void verificaDelay(float delay, int line) {
+        if (delay <= 0f) {
+            adicionaErro(String.format(
+                    "Linha %d: tempo deve ser maior que 0.0",
+                    line
+            ));
+        }
     }
 }

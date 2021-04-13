@@ -58,7 +58,7 @@ public class EnemySpawnSequenceCompiler {
         EnemyConfig enemy
     ) {
         this.enemy = enemy;
-        this.cooldown = aguarde;
+        this.cooldown = aguarde * 2f;
         this.amount = qtd;
         this.factory = factory;
     }

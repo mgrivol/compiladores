@@ -27,15 +27,29 @@ public class Semantico extends TGENBaseVisitor<Void> {
 
     @Override
     public Void visitInimigos(TGENParser.InimigosContext ctx) {
-        System.out.println("encontrei inimigos:");
         for (var i : ctx.inimigo()) {
-            System.out.println("inimigo -> " + i.getText());
             // verifique os parâmetros do inimigo
             Inimigo inimigo = SemanticoUtils.verificaInimigo(i);
             if (!ts.existe(inimigo.getNome())) {
                 // inimigo não existe na tabela, adicione
                 ts.adicionar(inimigo);
+            } else {
+                // inimigo já declarado
+                SemanticoUtils.adicionaErro(String.format(
+                        "Linha %d: inimigo %s ja declarado anteriormente",
+                        i.start.getLine(), inimigo.getNome()
+                ));
             }
+        }
+        return null;
+    }
+    
+    @Override
+    public Void visitOndas(TGENParser.OndasContext ctx) {
+        // verifica as ondas
+        for (var od : ctx.onda()) {
+            // verifica cada onda
+            SemanticoUtils.verificaOnda(od, ts);
         }
         return null;
     }
