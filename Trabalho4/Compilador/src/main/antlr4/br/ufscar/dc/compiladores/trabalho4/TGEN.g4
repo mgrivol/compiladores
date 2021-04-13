@@ -84,7 +84,7 @@ FLOAT :
 ;
 IDENT :
     // definição de um identificador
-    ( 'a'..'z' | 'A'..'Z' ) ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
+    ( 'a'..'z' | 'A'..'Z' ) ( 'a'..'z' | 'A'..'Z' )*
 ;
 COMENTARIO :
     // definição de um comentário

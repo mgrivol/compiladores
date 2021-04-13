@@ -1,0 +1,18 @@
+inimigos {
+    A {
+        forca = 1000; % valor invalido %
+        vida = 50000.0; % valor invalido %
+        velocidade = 5.0; % valor invalido %
+	modelo = "PEQUEN"; % valor invalido % 
+    }
+    B { 
+        % valores padroes %
+    }
+}
+start
+    onda {
+	A(10);
+        aguarde(1.0);
+	B(5, 1.5); 
+    }
+end

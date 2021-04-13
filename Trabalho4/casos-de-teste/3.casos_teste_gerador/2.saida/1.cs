@@ -32,21 +32,13 @@ public class GameScenarioCompiler {
         }
     }
    EnemyConfig Delay = new EnemyConfig(0f, 0f, 0, EnemyType.Delay);
-   EnemyConfig A = new EnemyConfig(100.0f, 2.0f, 10, EnemyType.Small);
-   EnemyConfig B = new EnemyConfig(300.0f, 1.25f, 30, EnemyType.Medium);
+   EnemyConfig A = new EnemyConfig(100.0f, 1.0f, 10, EnemyType.Medium);
 
     public GameScenarioCompiler(EnemyFactory factory) {
         this.factory = factory;
-        waves = new EnemyWaveCompiler[2];
-        waves[0] = new EnemyWaveCompiler(factory, 4);
-        waves[0].setSpawnSequence(0, 1f, 10, factory, A);
-        waves[0].setSpawnSequence(1, 10.0f, 1, factory, Delay);
-        waves[0].setSpawnSequence(2, 1f, 2, factory, B);
-        waves[0].setSpawnSequence(3, 5.0f, 1, factory, Delay);
-        waves[1] = new EnemyWaveCompiler(factory, 3);
-        waves[1].setSpawnSequence(0, 1f, 15, factory, A);
-        waves[1].setSpawnSequence(1, 1.5f, 5, factory, B);
-        waves[1].setSpawnSequence(2, 10.0f, 1, factory, Delay);
+        waves = new EnemyWaveCompiler[1];
+        waves[0] = new EnemyWaveCompiler(factory, 1);
+        waves[0].setSpawnSequence(0, 1.5f, 10, factory, A);
   }
 }
 

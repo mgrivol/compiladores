@@ -1,0 +1,2 @@
+Linha 10: vida deve ser maior ou igual a 10.0
+Fim da compilacao

@@ -1,0 +1,2 @@
+Linha 17: quantidade de inimigos deve ser maior que 0
+Fim da compilacao

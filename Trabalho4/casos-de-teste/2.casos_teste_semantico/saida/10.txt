@@ -1,0 +1,2 @@
+Linha 23: tempo deve ser maior que 0.0
+Fim da compilacao

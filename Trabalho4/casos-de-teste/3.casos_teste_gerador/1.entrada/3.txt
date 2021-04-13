@@ -1,0 +1,17 @@
+inimigos {
+    A {
+        vida = 100.0;
+	forca = 20;
+    }
+}
+start
+    onda {
+	A(10, 1.5);
+        aguarde(10.0);
+    }
+    onda {
+	A(10, 1.5);
+	aguarde(7.5);
+	A(20, 2.0);
+    }
+end

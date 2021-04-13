@@ -24,7 +24,7 @@ public class GameCompiler : MonoBehaviour {
 
     [SerializeField, Range(0, 100)]
     // 0 é vida infinita para testes
-    int startingPlayerHealth = 10; 
+    int startingPlayerHealth = 10;
 
     [SerializeField, Range(1f, 10f)]
     float playSpeed = 1f; // velocidade padrão
@@ -71,7 +71,7 @@ public class GameCompiler : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space)) {
             // "espaço" pausa o jogo
             Time.timeScale = Time.timeScale > pausedTimeScale ? pausedTimeScale : 1f;
-        } 
+        }
         else if (Time.timeScale > pausedTimeScale) {
             Time.timeScale = playSpeed;
         }
@@ -81,12 +81,19 @@ public class GameCompiler : MonoBehaviour {
             playerHealth = startingPlayerHealth;
             BeginNewGame();
         }
-        if (playerHealth <= 0 && startingPlayerHealth > 0) {
+        if (startingPlayerHealth == 0 && !activeScenario.Progress()
+            && enemies.IsEmpty) {
+                // modo invencivel
+            playerHealth = startingPlayerHealth;
+            enemies.Clear();
+            activeScenario = scenario.Begin();
+        }
+        else if (playerHealth <= 0 && startingPlayerHealth > 0) {
             // sem vida = fim de jogo
             Debug.Log("Derrota!");
             BeginNewGame();
         }
-        if (!activeScenario.Progress() && enemies.IsEmpty) {
+        else if (!activeScenario.Progress() && enemies.IsEmpty) {
             // cenário acabou e não existem inimigos = vitória
             Debug.Log("Vitoria!");
             BeginNewGame();

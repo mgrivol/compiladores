@@ -1,0 +1,12 @@
+inimigos {
+    A {
+	% quando apenas um parametro e definido %
+	% os outros ficam com valores padroes   %
+        forca = 4;
+    }
+}
+start
+    onda {
+        A(2);
+    }
+end

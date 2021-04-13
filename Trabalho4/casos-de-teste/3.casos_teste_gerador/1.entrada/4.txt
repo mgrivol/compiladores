@@ -1,0 +1,19 @@
+inimigos {
+    A {
+        vida = 100.0;
+	forca = 20;
+	velocidade = 2.0;
+	modelo = "PEQUENO";
+    }
+}
+start
+    onda {
+	A(10);
+        aguarde(10.0);
+    }
+    onda {
+	A(10);
+	aguarde(7.5);
+	A(20);
+    }
+end

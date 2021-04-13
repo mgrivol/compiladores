@@ -1,0 +1,2 @@
+Linha 19: inimigo C nao declarado
+Fim da compilacao

@@ -19,24 +19,30 @@ public class Principal {
         String inFile = args[0];
         // args[1] arquivo de saída
         String outFile = args[1];
-        // args[2] modo: sintatico (+ léxico), 
+        // args[2] modo (opcional): sintatico (+ léxico), 
         //               semantico (+ sintático), 
         //               gerador   (+ semântico)
-        String modo = args[2];
-
-        switch (modo) {
-            case "sintatico":
-                Sintatico(inFile, outFile);
-                break;
-            case "semantico":
-                Semantico(inFile, outFile);
-                break;
-            case "gerador":
-                Gerador(inFile, outFile);
-                break;
-            default:
-                System.out.println("ERRO -" + modo + "- MODO DESCONHECIDO!");
-                break;
+        if (args.length > 2) {
+            // Comando modo existe
+            String modo = args[2];
+            switch (modo) {
+                case "sintatico":
+                    Sintatico(inFile, outFile);
+                    break;
+                case "semantico":
+                    Semantico(inFile, outFile);
+                    break;
+                case "gerador":
+                    Gerador(inFile, outFile);
+                    break;
+                default:
+                    System.out.println("ERRO -" + modo + "- MODO DESCONHECIDO!");
+                    break;
+            }
+        } 
+        else {
+            // Comando modo não existe
+            Gerador(inFile, outFile);
         }
     }
 

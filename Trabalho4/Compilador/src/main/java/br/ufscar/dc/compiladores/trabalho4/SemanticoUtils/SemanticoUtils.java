@@ -77,7 +77,7 @@ public class SemanticoUtils {
         float vida = Float.parseFloat(ctx.FLOAT().getText());
         if (vida == 0f) {
             adicionaErro(String.format(
-                    "Linha %d: vida deve ser maior que 0.0", ctx.start.getLine()
+                    "Linha %d: vida deve ser maior ou igual a 10.0", ctx.start.getLine()
             ));
             return -1f;
         }

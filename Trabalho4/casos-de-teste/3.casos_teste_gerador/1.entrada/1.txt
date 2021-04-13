@@ -1,0 +1,10 @@
+inimigos {
+    A {
+        % valores padroes %
+    }
+}
+start
+    onda {
+	A(10, 1.5);
+    }
+end

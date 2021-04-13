@@ -1,0 +1,13 @@
+inimigos {
+    A {
+        forca = 4;
+        vida = 100.0;
+        velocidade = 3.5;
+	modelo = "PEQUENO"; 
+    }
+}
+start
+    onda {
+        A(5);
+    }
+% faltou end %

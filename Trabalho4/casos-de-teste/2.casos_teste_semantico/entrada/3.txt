@@ -1,0 +1,21 @@
+inimigos {
+    A {
+        forca = 4;
+        vida = 100.0;
+        velocidade = 3.5;
+	modelo = "PEQUENO"; 
+    }
+    B { 
+        forca = 10;
+        vida = 200.0;
+        velocidade = 2.5;
+	modelo = "MEDIO"; 
+    }
+}
+start
+    onda {
+	A(10);
+        aguarde(1.0);
+	C(5, 1.5); % C nao delcarado %
+    }
+end

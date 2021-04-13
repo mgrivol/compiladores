@@ -1,0 +1,2 @@
+Linha 4: erro sintatico proximo a 100
+Fim da compilacao

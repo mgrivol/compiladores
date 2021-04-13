@@ -1,0 +1,3 @@
+Linha 8: inimigo A ja declarado anteriormente
+Linha 19: inimigo B nao declarado
+Fim da compilacao

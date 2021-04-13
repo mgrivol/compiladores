@@ -1,0 +1,3 @@
+Linha 6: modelo pequeno nao e valido
+Linha 12: modelo medio nao e valido
+Fim da compilacao

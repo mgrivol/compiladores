@@ -1,0 +1,5 @@
+Linha 3: forca deve ser menor ou igual a 100
+Linha 4: vida deve ser menor ou igual a 1000.0
+Linha 5: velocidade deve ser menor ou igual a 4.0
+Linha 6: modelo PEQUEN nao e valido
+Fim da compilacao
