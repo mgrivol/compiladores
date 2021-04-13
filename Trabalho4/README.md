@@ -85,8 +85,8 @@ start
 	B(2); 
 	aguarde(5.0);
     }
-    onda {				% segunda onda %
-	B(5, 1.5);    		% nascer 5 inimigos do tipo B com intervalo de 1.5 %
+    onda {		    % segunda onda %
+	B(5, 1.5);          % nascer 5 inimigos do tipo B com intervalo de 1.5 %
 	aguarde(4.0);
         A(10);
     }
