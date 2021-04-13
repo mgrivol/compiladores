@@ -9,6 +9,7 @@ A linguagem TGEN (Tower Defense Generator) busca facilitar a criação de cenár
 2. [Instalação de Programas](#instalação-de-programas)
 2. [Uso da Linguagem](#uso-da-linguagem)
 3. [Compilador](#compilador)
+4. [Corretor](#corretor)
 
 ## TGEN
 Um jogo de Tower Defense (TD) consistem em defender um ponto de ordas de inimigos. Quando um inimigo chega ao ponto o jogador perde vida, quando  sua vida chega a zero o jogo termina. Para defender o ponto o jogador deve colocar torres que atiram diversos projéteis nos inimigos levando em consideração uma estratégia para matar todos os inimigos antes de perder o jogo.
@@ -137,8 +138,12 @@ Ulize o arquivo "Compilador.jar" ou realize a compilação do projeto, acesse o 
 * **ARQUIVO_SAIDA**: é o caminho onde será gerada a saída com as mensagens de compilação ou código C#.
 * **MODO** (opcional, padrão="gerador"): pode ser utilizado para selecionar o modo do compilador. Digite "sintatico" para realizar a análise léxica e sintática, "semantico" para realizar análise sintática e semântica, ou "gerador" para realizar a análise semântica e gerar o código caso não existam erros.
 
+## Corretor
+Um corretor foi disponibilizado para facilitar a correção. Este corretor foi modificado de [dlucredio/compiladores-corretor-automatico](https://github.com/dlucredio/compiladores-corretor-automatico) para ser compatível com o código gerado e ignorar a análise léxica (que é feita automaticamente pelas outras etapas).
 
+O corretor pode ser utilizado com os mesmos argumentos descritos nas instruções de uso de [dlucredio/compiladores-corretor-automatico](https://github.com/dlucredio/compiladores-corretor-automatico) com exceção do modo de análise léxica. Os arquivos de testes foram disponibilizados neste repositório.
 
+O código fonte do corretor está disponível neste repositório.
 
 
 
