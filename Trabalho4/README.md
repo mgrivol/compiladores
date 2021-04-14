@@ -10,6 +10,7 @@ A linguagem TGEN (Tower Defense Generator) busca facilitar a criação de cenár
 2. [Uso da Linguagem](#uso-da-linguagem)
 3. [Compilador](#compilador)
 4. [Corretor](#corretor)
+5. Video Demonstrativo - em desenvolvimento
 
 ## TGEN
 Um jogo de Tower Defense (TD) consistem em defender um ponto de ordas de inimigos. Quando um inimigo chega ao ponto o jogador perde vida, quando  sua vida chega a zero o jogo termina. Para defender o ponto o jogador deve colocar torres que atiram diversos projéteis nos inimigos levando em consideração uma estratégia para matar todos os inimigos antes de perder o jogo.
