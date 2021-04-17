@@ -140,7 +140,7 @@ Ulize o arquivo "Compilador.jar" ou realize a compilação do projeto, acesse o 
 * **MODO** (opcional, padrão="gerador"): pode ser utilizado para selecionar o modo do compilador. Digite "sintatico" para realizar a análise léxica e sintática, "semantico" para realizar análise sintática e semântica, ou "gerador" para realizar a análise semântica e gerar o código caso não existam erros.
 
 ## Corretor
-Um corretor foi disponibilizado para facilitar a correção. Este corretor foi modificado de [dlucredio/compiladores-corretor-automatico](https://github.com/dlucredio/compiladores-corretor-automatico) para ser compatível com o código gerado e ignorar a análise léxica (que é feita automaticamente pelas outras etapas).
+Um [corretor foi disponibilizado](https://github.com/MarcoGrivol/compiladores/blob/master/Trabalho4/corretor.jar) para facilitar a correção. Este corretor foi modificado de [dlucredio/compiladores-corretor-automatico](https://github.com/dlucredio/compiladores-corretor-automatico) para ser compatível com o código gerado e ignorar a análise léxica (que é feita automaticamente pelas outras etapas).
 
 O corretor pode ser utilizado com os mesmos argumentos descritos nas instruções de uso de [dlucredio/compiladores-corretor-automatico](https://github.com/dlucredio/compiladores-corretor-automatico) com exceção do modo de análise léxica. Os arquivos de testes foram disponibilizados neste repositório.
 
