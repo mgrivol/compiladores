@@ -330,7 +330,7 @@ MonoBehaviour:
   board: {fileID: 1567745804}
   enemyFactory: {fileID: 11400000, guid: 65e9ed613cbd4ad4fb7ceed5534d5005, type: 2}
   warFactory: {fileID: 11400000, guid: a13bda7f699b71b46b35a2a3b8b93efe, type: 2}
-  startingPlayerHealth: 0
+  startingPlayerHealth: 100
   playSpeed: 1
 --- !u!4 &1504909427
 Transform:
