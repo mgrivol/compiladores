@@ -144,7 +144,7 @@ Um corretor foi disponibilizado para facilitar a correção. Este corretor foi m
 
 O corretor pode ser utilizado com os mesmos argumentos descritos nas instruções de uso de [dlucredio/compiladores-corretor-automatico](https://github.com/dlucredio/compiladores-corretor-automatico) com exceção do modo de análise léxica. Os arquivos de testes foram disponibilizados neste repositório.
 
-O código [fonte do corretor](https://github.com/MarcoGrivol/compiladores/tree/master/Trabalho4/compiladores-corretor-automatico) está disponível neste repositório.
+O [código fonte do corretor](https://github.com/MarcoGrivol/compiladores/tree/master/Trabalho4/compiladores-corretor-automatico) está disponível neste repositório.
 
 
 
