@@ -81,8 +81,9 @@ inimigos {
 start
     % definindo ondas %
     onda {	            % primeira onda %
-	A(10);              % nascer 10 inimigos do tipo A %
         aguarde(5.0);       % aguarde 10.0 antes da próxima instrução %
+	A(10);              % nascer 10 inimigos do tipo A %
+        aguarde(5.0);       
 	B(2); 
 	aguarde(5.0);
     }
