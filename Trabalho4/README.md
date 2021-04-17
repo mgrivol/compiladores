@@ -32,12 +32,12 @@ Um arquivo da linguagem TGEN possui a seguinte estrutura:
 ``` 
 % isto é um comentário %
 inimigos { 
-	IDENT {					% IDENT := (uma ou mais letras do alfabeto) %
+    IDENT {					% IDENT := (uma ou mais letras do alfabeto) %
     	ATRIBUTOS
     }
 }
 start
-	onda {
+    onda {
     	COMANDOS
     }
 end
