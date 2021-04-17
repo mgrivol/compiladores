@@ -2,6 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+
+Siglas: 
+right mouse button (RMB) - botão direito do mouse
+left mouse button (LMB) - botão esquerdo do mouse
+
+Botões:
+Espaço      := pausa o jogo
+RMB         := cria/remove ponto de nascimento de inimigos
+SHIFT + RMB := cria/remove ponto objetivo
+LMB         := cria/remove parede
+SHIFT + LMB := cria/remove torre (substitui parede se existir)
+1           := seleciona torre do tipo LASER (coloque com SHIFT + LMB)
+2           := seleciona torre do tipo MORTEIRO (coloque com SHIFT + LMB)
+
+V           := mostra o caminho para o objetivo a partir de cada TILE
+*/
+
 public class GameCompiler : MonoBehaviour {
 
     [SerializeField]
@@ -153,6 +171,7 @@ public class GameCompiler : MonoBehaviour {
     public static void EnemyReachedDestination(int strength) {
         // inimigos chamam esta função para avisar que chegaram ao destino
         instance.playerHealth -= strength;
+        Debug.Log("Vida restante:" + instance.playerHealth);
     }
 
     // métodos privados

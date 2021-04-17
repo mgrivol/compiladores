@@ -38,11 +38,12 @@ public class GameScenarioCompiler {
     public GameScenarioCompiler(EnemyFactory factory) {
         this.factory = factory;
         waves = new EnemyWaveCompiler[2];
-        waves[0] = new EnemyWaveCompiler(factory, 4);
-        waves[0].setSpawnSequence(0, 1f, 10, factory, A);
-        waves[0].setSpawnSequence(1, 5.0f, 1, factory, Delay);
-        waves[0].setSpawnSequence(2, 1f, 2, factory, B);
-        waves[0].setSpawnSequence(3, 5.0f, 1, factory, Delay);
+        waves[0] = new EnemyWaveCompiler(factory, 5);
+        waves[0].setSpawnSequence(0, 5.0f, 1, factory, Delay);
+        waves[0].setSpawnSequence(1, 1f, 10, factory, A);
+        waves[0].setSpawnSequence(2, 5.0f, 1, factory, Delay);
+        waves[0].setSpawnSequence(3, 1f, 2, factory, B);
+        waves[0].setSpawnSequence(4, 5.0f, 1, factory, Delay);
         waves[1] = new EnemyWaveCompiler(factory, 3);
         waves[1].setSpawnSequence(0, 1.5f, 5, factory, B);
         waves[1].setSpawnSequence(1, 4.0f, 1, factory, Delay);
