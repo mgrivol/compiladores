@@ -132,7 +132,7 @@ O compilador pode ser utilizado com o arquivo jar providenciado ou compilado a p
 Abra o NetBeans, selecione **File → Open Project**, acesse o diretório com o clone do repositório, selecione o diretório **Trabalho4/Compilador** e abra o projeto.
 Na barra de ferramentas da IDE, selecione **Clean and Build Project**.
 
-## Executar
+### Executar
 Ulize o arquivo "Compilador.jar" ou realize a compilação do projeto, acesse o terminal e digite: \
 ``java -jar LOCAL_CLONE/compiladores/Trabalho4/Compilador/target/Compilador-1.0-SNAPSHOT-jar-with-dependencies.jar ARQUIVO_ENTRADA ARQUIVO_SAIDA MODO``
 * **LOCAL_CLONE**: é o caminho até o diretório contendo o repositório da etapa anterior.
