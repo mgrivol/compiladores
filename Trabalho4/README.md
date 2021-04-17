@@ -56,9 +56,9 @@ Um inimigo pode ou não possuir atributos, caso um atributo não seja declarado,
 ### Ondas
 Ondas são definidas entre `start` e `end`. Cada onda deve possuir pelo menos um dos três comandos:
 ```
-IDENT(INT);	     % Nascer N inimigos. N := INT                                          %
-IDENT(INT, FLOAT);   % Nascer (1 inimigo a cada X segundos) N vezes. N := INT e X := FLOAT   %
-aguarde(FLOAT);      % Aguarde X segundos antes de realizar a próxima instrução. X := FLOAT %
+IDENT(INT);	     % Nascer N inimigos do tipo IDENT. N := INT                                           %
+IDENT(INT, FLOAT);   % Nascer (1 inimigo do tipo IDENT a cada X segundos) N vezes. N := INT e X := FLOAT   %
+aguarde(FLOAT);      % Aguarde X segundos antes de realizar a próxima instrução. X := FLOAT                %
 ```
 
 ### Exemplo
