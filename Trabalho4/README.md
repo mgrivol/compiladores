@@ -16,7 +16,7 @@ A linguagem TGEN (Tower Defense Generator) busca facilitar a criação de cenár
 Um jogo de Tower Defense (TD) consiste em defender um ponto de ondas de inimigos. Quando um inimigo chega ao ponto o jogador perde vida, quando  sua vida chega a zero o jogo termina. Para defender o ponto o jogador deve colocar torres que atiram diversos projéteis nos inimigos levando em consideração uma estratégia para matar todos os inimigos antes de perder o jogo.
 
 
-Um cenário de um jogo de TD consiste em definir hordas de inimigos, cada orda é composta por um ou mais tipos de inimigos. Dessa forma, a linguagem TGEN consiste em definir inimigos e o conteúdo de cada onda.
+Um cenário de um jogo de TD consiste em definir ondas de inimigos, cada onda é composta por um ou mais tipos de inimigos. Dessa forma, a linguagem TGEN consiste em definir inimigos e o conteúdo de cada onda.
 
 Um **inimigo** possui os seguintes atributos:
 * Força: entre 1 e 100, padrão = 10
