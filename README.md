@@ -1,6 +1,5 @@
 # Construção de Compiladores
 
-**Aluno: Marco Antônio Bernardi Grivol**\
 
 ## Trabalho 1: Analisador Léxico
 O primeiro trabalho apresenta um analisador léxico para a linguagem LA.\

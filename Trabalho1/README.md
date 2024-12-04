@@ -1,6 +1,4 @@
 # Trabalho 1
-**Aluno: Marco Antônio Bernardi Grivol**\
-**RA: 758619**
 
 Analisador léxico para a linguagem LA é um programa que recebe como entrada um arquivo contendo um algoritmo escrito na linguagem LA e retorna os tokens gerados.
 

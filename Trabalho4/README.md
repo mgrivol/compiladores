@@ -1,6 +1,4 @@
 # Trabalho 4 - Linguagem TGEN
-**Aluno: Marco Antônio Bernardi Grivol**\
-**RA: 758619**
 
 A linguagem TGEN (Tower Defense Generator) busca facilitar a criação de cenários para um jogo de Tower Defense. Este documento apresenta a linguagem, seu compilador, casos de teste e como utilizá-la.
 

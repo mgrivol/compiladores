@@ -1,6 +1,4 @@
 # Trabalho 3
-**Aluno: Marco Antônio Bernardi Grivol**\
-**RA: 758619**
 
 Analisador semântico para a linguagem LA é um programa que recebe como entrada um arquivo contendo um algoritmo escrito na linguagem LA e retorna qualquer erro léxico, sintático ou semântico. Se não houverem erros, é gerado o código em C.
 
